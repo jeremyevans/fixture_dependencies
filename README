@@ -1,0 +1,202 @@
+fixture_dependencies
+====================
+
+fixture_dependencies is a plugin that changes the way Rails uses fixtures in
+the following ways:
+
+- Fixtures can specify associations instead of foreign keys
+- Supports belongs_to, has_many, has_one, and habtm associations
+- Loads a fixture's dependencies (associations with other fixtures) before the
+  fixture itself so that foreign key constraints aren't violated
+- Can specify individual fixtures to load per test or test suite
+- Loads fixtures on every test inside a transaction, so fixture information
+  is never left in your database
+- Handles almost all cyclic dependencies
+
+To use, first install the plugin, then add the following to
+test/test_helper.rb after "require 'test_help'":
+
+  require 'fixture_dependencies_test_help'
+
+This overrides the default test helper to load the fixtures inside transactions
+and to use FixtureDependencies to load the fixtures.
+
+Changes to Fixtures
+-------------------
+
+fixture_dependencies is designed to require the least possible changes to
+fixtures.  For example, see the following changes:
+
+  OLD                       NEW
+  asset1:                   asset1:
+    id: 1                     id: 1
+    employee_id: 2            employee: jeremy
+    product_id: 3             product: nx7010
+    vendor_id: 2              vendor: lxg_computers
+    note: in working order    note: in working order                
+
+As you can see, you just replace the foreign key attribute and value with the
+name of the association and the associations name.  This assumes you have an
+employee fixture with a name of jeremy, and products fixture with the name of
+nx7010, and a vendors fixture with the name lxg_computers.
+
+Fixture files still use the table_name of the model.
+
+Changes to the fixtures Class Method
+------------------------------------
+
+fixture_dependencies can still use the fixtures class method in your test:
+
+  class EmployeeTest < Test::Unit::TestCase
+    fixtures :assets
+  end
+
+In Rails default testing practices, the arguments to fixtures are table names.
+fixture_dependencies changes this to underscored model names.  If you are using
+Rails' recommended table practices, this shouldn't make a difference.
+
+Another change is that Rails defaults allow you to specify habtm join tables in
+fixtures.  That doesn't work with fixture dependencies, as there is no
+associated model.  Instead, you use a has_and_belongs_to_many association name
+in the the appropriate model fixtures (see below).
+
+Loading Individual Fixtures with fixtures
+-----------------------------------------
+
+There is support for loading individual fixtures (and just their dependencies),
+using the following syntax:
+
+  class EmployeeTest < Test::Unit::TestCase
+    fixtures :employee__jeremy # Note the double underscore
+  end
+  
+This would load just the jeremy fixture and its dependencies.  I find this is
+much better than loading all fixtures in most of my test suites.
+
+Loading Fixtures Inside Test Methods
+------------------------------------
+
+I find that it is often better to skip the use of the fixtures method entirely,
+and load the fixtures I want manually in each test method.  This provides for
+the loosest coupling possible.  Here's an example:
+
+  class EmployeeTest < Test::Unit::TestCase
+    def test_employee_name
+      # Load the fixture and return the Employee object
+      employee = load(:employee__jeremy)
+      # Test the employee
+    end
+    
+    def test_award_statistics
+      #  Load all fixtures in both tables
+      load(:employee_awards, :awards)
+      # Test the award_statistics method
+      #  (which pulls data from the tables loaded above)
+    end
+  end
+
+Don't worry about loading the same fixture twice, if a fixture is already
+loaded, it won't attempt to load it again.
+
+has_* Assocations in Fixtures
+-----------------------------
+
+Here's an example of using has_one (logon_information), has_many (assets), and
+has_and_belongs_to_many (groups) associations.
+
+jeremy:
+  id: 2
+  name: Jeremy Evans
+  logon_information: jeremy
+  assets: [asset1, asset2, asset3]
+  groups: [group1]
+
+logon_information is a has_one association to another table which was split
+from the employees table due to database security requirements.  Assets is a
+has_many association, where one employee is responsible for the asset.
+Employees can be a member of multiple groups, and each group can have multiple
+employees.
+
+For has_* associations, after fixture_dependencies saves jeremy, it will load
+and save logon_information (and its dependencies...), it will load each asset
+in the order specified (and their dependencies...), and it will load all of the
+groups in the order specified (and their dependencies...).  Note that there
+is only a load order inside a specific association, associations are stored
+in the same hash as attributes and are loaded in an arbitrary order.
+
+Cyclic Dependencies
+-------------------
+
+fixture_dependencies handles almost all cyclic dependencies.  It handles all
+has_many, has_one, and habtm cyclic dependencies.  It handles all
+self-referential cyclic dependencies.  It handles all belongs_to cyclic
+dependencies except the case where there is a NOT NULL or validates_presence of
+constraint on the cyclic dependency's foreign key.  
+
+For example, a case that won't work is when employee belongs_to supervisor
+(with a NOT NULL or validates_presence_of constraint on supervisor_id), and
+john is karl's supervisor and karl is john's supervisor. Since you can't create
+john without a valid supervisor_id, you need to create karl first, but you
+can't create karl for the same reason (as john doesn't exist yet).  
+
+There isn't a generic way to handle the belongs_to cyclic dependency, as far as
+I know.  Deferring foreign key checks could work, but may not be enabled (and
+one of the main reasons to use the plugin is that it doesn't require them).
+For associations like the example above (employee's supervisor is also an
+employee), setting the foreign_key to the primary key and then changing it
+later is an option, but database checks may prevent it.  For more complex
+cyclic dependencies involving multiple model classes (employee belongs_to
+division belongs_to head_of_division when the employee is a member of the
+division and also the head of the division), even that approach is not
+possible.
+
+Known Issues
+------------
+
+Currently, the plugin only supports yaml fixtures, but other types of fixtures
+would be fairly easy to add (send me a patch if you add support for another
+fixture type).
+
+The plugin is significantly slower than the default testing method, because it
+loads all fixtures inside of a transaction (one per test method), where Rails
+defaults to loading the fixtures once per test suite (outside of a
+transaction), and only deletes fixtures from a table when overwriting it with
+new fixtures.  Rails actually did something similar starting with r2714, but it
+was rolled back in r2730 due to speed issues.  See ticket #2404 on Rails' trac.
+
+Instantiated fixtures are not available with this plugin.  Instead, you should
+use load(:model__fixture_name).
+
+Troubleshooting
+---------------
+
+If you run into problems with loading your fixtures, it can be difficult to see
+where the problems are.  To aid in debugging an error, add the following to 
+test/test_helper.rb:
+
+  FixtureDependencies.verbose = 2
+  
+This will give a verbose description of the loading and saving of fixtures for
+every test, including the recursive loading of all dependencies.
+
+Similar Ideas
+-------------
+
+fixture_references is a similar plugin.  It uses erb inside yaml, and uses the
+foreign key numbers inside of the association names, which leads me to believe
+it doesn't support has_* associations.
+
+Ticket #6424 on the Rails' trac also implements a similar idea, but it parses
+the associations and changes them to foreign keys, which leads me to believe it
+doesn't support has_* associations either.
+
+License
+-------
+
+fixture_dependencies is released under the MIT License.  See the LICENSE file
+for details.
+
+Author
+------
+
+Jeremy Evans <code@jeremyevans.net>
