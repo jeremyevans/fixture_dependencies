@@ -7,6 +7,7 @@ module Test
       def self.method_added(x)
       end
       
+      # Load fixtures using FixtureDependencies inside a transaction
       def setup_with_fixtures
         ActiveRecord::Base.send :increment_open_transactions
         ActiveRecord::Base.connection.begin_db_transaction
@@ -19,10 +20,12 @@ module Test
       end
       
       private
+        # Load fixtures named with the fixtures class method
         def load_fixtures
           load(*fixture_table_names)
         end
         
+        # Load given fixtures using FixtureDependencies
         def load(*fixture)
           FixtureDependencies.load(*fixture)
         end
