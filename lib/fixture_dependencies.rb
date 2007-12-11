@@ -43,14 +43,14 @@ class FixtureDependencies
       # the fixture name.  
       def get(record)
         model_name, name = split_name(record)
-        model = model_name.classify.constantize
+        model = model_name.camelize.constantize
         model.find(fixtures[model_name.to_sym][name.to_sym][model.primary_key.to_sym])
       end
       
       # Adds all fixtures in the yaml fixture file for the model to the fixtures
       # hash (does not add them to the database, see add).
       def load_yaml(model_name)
-        YAML.load(File.read(File.join(Test::Unit::TestCase.fixture_path, "#{model_name.classify.constantize.table_name}.yml"))).each do |name, attributes|
+        YAML.load(File.read(File.join(Test::Unit::TestCase.fixture_path, "#{model_name.camelize.constantize.table_name}.yml"))).each do |name, attributes|
           symbol_attrs = {}
           attributes.each{|k,v| symbol_attrs[k.to_sym] = v}
           add(model_name.to_sym, name, symbol_attrs)
@@ -76,7 +76,7 @@ class FixtureDependencies
         puts "#{spaces}load stack:#{loading.inspect}" if verbose > 1
         loading.push(record)
         model_name, name = split_name(record)
-        model = model_name.classify.constantize
+        model = model_name.camelize.constantize
         unless loaded[model_name.to_sym]
           puts "#{spaces}loading #{model.table_name}.yml" if verbose > 0
           load_yaml(model_name) 
