@@ -18,10 +18,9 @@ test/test_helper.rb after "require 'test_help'":
 This overrides the default test helper to load the fixtures inside transactions
 and to use FixtureDependencies to load the fixtures.
 
-fixture_dependencies is available via http and svn:
+fixture_dependencies is available via github:
 
-  svn: svn://code.jeremyevans.net/rails-plugins/fixture_dependencies
-  file: http://code.jeremyevans.net/code/fixture_dependencies.tar.gz
+  http://github.com/jeremyevans/fixture_dependencies/tree/master
 
 Changes to Fixtures:
 
