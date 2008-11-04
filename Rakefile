@@ -1,6 +1,10 @@
 require 'rake'
 require 'rake/clean'
-require 'rake/rdoctask'
+begin
+  require 'hanna/rdoctask'
+rescue LoadError
+  require 'rake/rdoctask'
+end
 
 CLEAN.include ["rdoc"]
 
