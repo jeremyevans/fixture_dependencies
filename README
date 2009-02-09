@@ -12,9 +12,9 @@ the following features:
   constraints aren't violated
 - Has a very simple API (FixtureDependencies.load(:model__fixture))
 - Handles almost all cyclic dependencies
-- Includes Rails and Sequel test helpers for Test::Unit that load fixtures for
-  every test inside a transaction, so fixture data is never left in your
-  database
+- Includes Rails and Sequel test helpers for Test::Unit (and a Sequel test
+  helper for RSpec) that load fixtures for every test inside a transaction,
+  so fixture data is never left in your database
 
 == Installation
 
@@ -54,11 +54,18 @@ Make sure the test case classes use FixtureDependencies::SequelTestCase:
 
 This runs the test cases inside a Sequel transaction.
 
+=== With Sequel/RSpec:
+
+Somewhere before the test code is loaded:
+
+  require 'fixture_dependencies/rspec/sequel'
+  
+This runs each spec inside a separate Sequel transaction.
+
 === With other testing libraries:
 
 You can just use FixtureDependencies.load to handle the loading of fixtures.
-The use of transactions is up to you.  It's fairly easy to add support for
-running RSpec examples inside transactions.  One thing you must do if you are
+The use of transactions is up to you.  One thing you must do if you are
 not using the rails test helper is to set the fixture path for
 FixtureDependencies:
 
@@ -126,6 +133,12 @@ the loosest coupling possible.  Here's an example:
       # Load the fixture and return the Employee object
       employee = load(:employee__jeremy)
       # Test the employee
+    end
+    
+    def test_employees
+      # Load the fixtures and return two Employee objects
+      employee1, employee2 = load(:employees=>[:jeremy, :karl])
+      # Test the employees
     end
     
     def test_award_statistics
@@ -206,8 +219,7 @@ The plugin is significantly slower than the default testing method, because it
 loads all fixtures inside of a transaction (one per test method), where Rails
 defaults to loading the fixtures once per test suite (outside of a
 transaction), and only deletes fixtures from a table when overwriting it with
-new fixtures.  Rails actually did something similar starting with r2714, but it
-was rolled back in r2730 due to speed issues.  See ticket #2404 on Rails' trac.
+new fixtures.  
 
 Instantiated fixtures are not available with this plugin.  Instead, you should
 use load(:model__fixture_name).

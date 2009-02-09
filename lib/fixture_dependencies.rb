@@ -10,11 +10,32 @@ class FixtureDependencies
   # to that model.  If multiple arguments are given, return a list of
   # model instances (for single fixture arguments) or list of model instances
   # (for model fixture arguments).  If no arguments, return the empty list.
+  # If any of the arguments is a hash, assume the key specifies the model
+  # and the values specify the fixture, and treat it as though individual
+  # symbols specifying both model and fixture were given.
+  # 
+  # Examples:
+  # * load(:posts) # All post fixtures, not recommended
+  # * load(:posts, :comments) # All post and comment fixtures, again not recommended
+  # * load(:post__post1) # Just the post fixture named post1
+  # * load(:post__post1, :post__post2) # Post fixtures named post1 and post2
+  # * load(:posts=>[:post1, :post2]) # Post fixtures named post1 and post2
+  # * load(:post__post1, :comment__comment2) # Post fixture named post1 and comment fixture named comment2
+  # * load({:posts=>[:post1, :post2]}, :comment__comment2) # Post fixtures named post1 and post2 and comment fixture named comment2
   #
   # This will load the data from the yaml files for each argument whose model
   # is not already in the fixture hash.
   def self.load(*records)
-    ret = records.collect do |record| 
+    ret = records.map do |record|
+      if record.is_a?(Hash)
+        record.map do |k, vals|
+          model = k.to_s.singularize
+          vals.map{|v| :"#{model}__#{v}"}
+        end
+      else
+        record
+      end
+    end.flatten.compact.map do |record| 
       model_name, name = split_name(record)
       if name
         use(record.to_sym)
@@ -24,10 +45,10 @@ class FixtureDependencies
           puts "loading #{model_name}.yml" if verbose > 0
           load_yaml(model_name) 
         end
-        fixtures[model_name.to_sym].keys.collect{|name| use("#{model_name}__#{name}".to_sym)}
+        fixtures[model_name.to_sym].keys.map{|name| use(:"#{model_name}__#{name}")}
       end
     end
-    records.length == 1 ? ret[0] : ret
+    ret.length == 1 ? ret[0] : ret
   end
 end
 
