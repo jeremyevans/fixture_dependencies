@@ -1,3 +1,5 @@
+require('sequel/extensions/inflector') unless [:singularize, :camelize, :underscore, :constantize].all?{|meth| "".respond_to?(meth)}
+
 class FixtureDependencies
   @fixtures = {}
   @loaded = {}
