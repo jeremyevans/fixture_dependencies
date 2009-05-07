@@ -135,6 +135,7 @@ class << FixtureDependencies
     # return if object has already been loaded into the database
     if existing_obj = model_method(:model_find_by_pk, mtype, model, attributes[model.primary_key.to_sym])
       puts "#{spaces}using #{record}: already in database" if verbose > 2
+      loading.pop
       return existing_obj
     end
     obj = model.new
