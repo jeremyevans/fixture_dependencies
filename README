@@ -19,7 +19,7 @@ the following features:
 == Installation
 
   sudo gem install jeremyevans-fixture_dependencies \
-    --source http://gems.github.com
+    --source http://gemcutter.org
     
 == Source
 
