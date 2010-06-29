@@ -1,6 +1,8 @@
 class Spec::Example::ExampleGroup
   def execute(*args, &block)
-    Sequel::Model.db.transaction{super(*args, &block); raise Sequel::Error::Rollback}
+    x = nil
+    Sequel::Model.db.transaction{x = super(*args, &block); raise Sequel::Error::Rollback}
+    x
   end
 
   def load(*args)
