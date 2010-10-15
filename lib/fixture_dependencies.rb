@@ -1,4 +1,5 @@
 require('sequel/extensions/inflector') unless [:singularize, :camelize, :underscore, :constantize].all?{|meth| "".respond_to?(meth)}
+require 'erb'
 
 class FixtureDependencies
   @fixtures = {}
@@ -82,7 +83,19 @@ class << FixtureDependencies
   # hash (does not add them to the database, see add).
   def load_yaml(model_name)
     raise(ArgumentError, "No fixture_path set. Use FixtureDependencies.fixture_path = ...") unless fixture_path
-    YAML.load(File.read(File.join(fixture_path, "#{model_name.camelize.constantize.table_name}.yml"))).each do |name, attributes|
+
+    filename = model_name.camelize.constantize.table_name
+    yaml_path = File.join(fixture_path, "#{filename}.yml")
+
+    if File.exist?(yaml_path)
+      yaml = YAML.load(File.read(yaml_path))
+    elsif File.exist?("#{yaml_path}.erb")
+      yaml = YAML.load(ERB.new(IO.read("#{yaml_path}.erb")).result)
+    else
+      raise(ArgumentError, "No valid fixture found at #{yaml_path}[.erb]")
+    end
+
+    yaml.each do |name, attributes|
       symbol_attrs = {}
       attributes.each{|k,v| symbol_attrs[k.to_sym] = v}
       add(model_name.to_sym, name, symbol_attrs)
