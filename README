@@ -18,8 +18,7 @@ the following features:
 
 == Installation
 
-  sudo gem install jeremyevans-fixture_dependencies \
-    --source http://gemcutter.org
+  gem install fixture_dependencies
     
 == Source
 
@@ -91,6 +90,16 @@ employee fixture with a name of jeremy, and products fixture with the name of
 nx7010, and a vendors fixture with the name lxg_computers.
 
 Fixture files still use the table_name of the model.
+
+== ERB Fixtures
+
+Fixtures can also use ERB to preprocess the fixture file, useful if you need
+to do any programming inside the fixture file, such as looping to create
+multiple records.  For the ERB support to be invoked, your fixture file
+should be named #{table_name}.yml.erb instead of #{table_name}.yml. You can
+mix ERB fixture files and regular fixture files, but you can not have an
+ERB fixture file and a regular fixture file for the same table (the regular
+fixture file will be used in that case).
 
 == Changes to the fixtures Class Method:
 
