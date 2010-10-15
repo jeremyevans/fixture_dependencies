@@ -90,7 +90,7 @@ class << FixtureDependencies
     if File.exist?(yaml_path)
       yaml = YAML.load(File.read(yaml_path))
     elsif File.exist?("#{yaml_path}.erb")
-      yaml = YAML.load(ERB.new(IO.read("#{yaml_path}.erb")).result)
+      yaml = YAML.load(ERB.new(File.read("#{yaml_path}.erb")).result)
     else
       raise(ArgumentError, "No valid fixture found at #{yaml_path}[.erb]")
     end
