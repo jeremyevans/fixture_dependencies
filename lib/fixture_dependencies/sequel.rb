@@ -2,7 +2,11 @@ class << FixtureDependencies
   private
   
   def add_associated_object_S(reflection, attr, object, assoc)
-    object.send("add_#{attr.to_s.singularize}", assoc) unless object.send(attr).include?(assoc)
+    if reflection[:type] == :one_to_one
+      object.send("#{reflection[:name]}=", assoc)
+    else
+      object.send("add_#{attr.to_s.singularize}", assoc) unless object.send(attr).include?(assoc)
+    end
   end
   
   def model_find_S(model, pk)
