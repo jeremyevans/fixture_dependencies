@@ -141,7 +141,7 @@ class << FixtureDependencies
     model = model_name.camelize.constantize
     unless loaded[model_name.to_sym]
       puts "#{spaces}loading #{model.table_name}.yml" if verbose > 0
-      load_yaml(model_name) 
+      load_yaml(model_name)
     end
     mtype = model_type(model)
     model_method(:raise_model_error, mtype, "Couldn't use fixture #{record.inspect}") unless attributes = fixtures[model_name.to_sym][name.to_sym]
@@ -151,7 +151,8 @@ class << FixtureDependencies
       loading.pop
       return existing_obj
     end
-    obj = model.new
+    obj = model.respond_to?(:sti_key) ? attributes[model.sti_key].to_s.camelize.constantize.new : model.new
+    puts "#{spaces}#{model} STI plugin detected, initializing instance of #{obj}" if (verbose > 1 && model.sti_dataset)
     many_associations = []
     attributes.each do |attr, value|
       if reflection = model_method(:reflection, mtype, model, attr.to_sym)
