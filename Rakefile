@@ -13,7 +13,7 @@ Rake::RDocTask.new do |rdoc|
   rdoc.options += ["--quiet", "--line-numbers", "--inline-source"]
   rdoc.main = "README"
   rdoc.title = "fixture_dependencies: Rails fixture loading that works with foreign keys"
-  rdoc.rdoc_files.add ["README", "LICENSE", "lib/**/*.rb"]
+  rdoc.rdoc_files.add ["README", "MIT-LICENSE", "lib/**/*.rb"]
 end
 
 desc "Package fixture_dependencies"
