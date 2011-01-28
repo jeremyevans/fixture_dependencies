@@ -1,2 +1,4 @@
-rdoc/
-*.gem
+/rdoc/
+/*.gem
+/spec/db
+/coverage

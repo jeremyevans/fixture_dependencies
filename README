@@ -7,7 +7,7 @@ the following features:
 - Fixtures specify association names instead of foreign keys
 - Support both Sequel and ActiveRecord
 - Supports many_to_one/belongs_to, one_to_many/has_many,
-  many_to_many/has_and_belongs_to_many, and has_one associations
+  many_to_many/has_and_belongs_to_many, and has_one/one_to_one associations
 - Loads a fixture's dependency graph in such a manner that foreign key
   constraints aren't violated
 - Has a very simple API (FixtureDependencies.load(:model__fixture))
@@ -128,7 +128,7 @@ using the following syntax:
   
 This would load just the jeremy fixture and its dependencies.  I find this is
 much better than loading all fixtures in most of my test suites.  Even better
-is loading just the fixtures you want instead every test method (see below).
+is loading just the fixtures you want inside every test method (see below).
 This leads to the most robust testing.
 
 == Loading fixtures inside test methods
@@ -244,6 +244,13 @@ test/test_helper.rb:
 This will give a verbose description of the loading and saving of fixtures for
 every test, including the recursive loading of the dependency graph.
 
+== Specs
+
+The specs for fixture dependencies and be run with Rake.  They require
+the sequel, activerecord, and sqlite3 gems installed.  The default rake task
+runs the specs.  You should run the spec_migrate task first to create the
+spec database.
+
 == Similar Ideas
 
 Rails now supports something similar by default.  Honestly, I'm not sure what
@@ -255,8 +262,8 @@ it doesn't support has_* associations.
 
 == License
 
-fixture_dependencies is released under the MIT License.  See the LICENSE file
-for details.
+fixture_dependencies is released under the MIT License.  See the MIT-LICENSE
+file for details.
 
 == Author
 
