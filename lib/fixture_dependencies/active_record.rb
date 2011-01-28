@@ -22,7 +22,7 @@ class << FixtureDependencies
   end
   
   def raise_model_error_AR(message)
-    ActiveRecord::RecordNotFound
+    raise ActiveRecord::RecordNotFound, message
   end
   
   def reflection_AR(model, attr)

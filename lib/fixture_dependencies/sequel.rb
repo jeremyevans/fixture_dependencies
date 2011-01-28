@@ -23,7 +23,7 @@ class << FixtureDependencies
   end
   
   def raise_model_error_S(message)
-    Sequel::Error
+    raise Sequel::Error, message
   end
   
   def reflection_S(model, attr)
