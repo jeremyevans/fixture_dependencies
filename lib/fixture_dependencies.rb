@@ -152,7 +152,7 @@ class << FixtureDependencies
       return existing_obj
     end
     obj = model.respond_to?(:sti_key) ? attributes[model.sti_key].to_s.camelize.constantize.new : model.new
-    puts "#{spaces}#{model} STI plugin detected, initializing instance of #{obj}" if (verbose > 1 && model.sti_dataset)
+    puts "#{spaces}#{model} STI plugin detected, initializing instance of #{obj}" if (verbose > 1 && model.respond_to?(:sti_dataset))
     many_associations = []
     attributes.each do |attr, value|
       if reflection = model_method(:reflection, mtype, model, attr.to_sym)
