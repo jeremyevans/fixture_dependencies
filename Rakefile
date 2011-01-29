@@ -31,10 +31,8 @@ begin
   end
 
   desc "Run ActiveRecord specs"
-  Spec::Rake::SpecTask.new(:spec_ar) do |t|
-    ENV['FD_AR'] = '1'
-    t.spec_files = Dir['spec/*_spec.rb']
-    #t.rcov = true
+  task :spec_ar do
+    sh %{rake spec_sequel FD_AR=1}
   end
 
   desc "Run Sequel and ActiveRecord specs"
