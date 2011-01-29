@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'sequel'
+require 'logger'
 
 DB = Sequel.sqlite(File.join(File.dirname(File.expand_path(__FILE__)), 'db', 'fd_spec.sqlite3'))
 
