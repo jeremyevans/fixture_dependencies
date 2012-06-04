@@ -10,7 +10,7 @@ class << FixtureDependencies
   end
   
   def model_find_S(model, pk)
-    model[pk] || raise(Sequel::Error)
+    model[pk] || raise_model_error_S("No matching record for #{model.name}[#{pk.inspect}]")
   end
   
   def model_find_by_pk_S(model, pk)
