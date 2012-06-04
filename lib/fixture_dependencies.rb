@@ -1,5 +1,6 @@
 require('sequel/extensions/inflector') unless [:singularize, :camelize, :underscore, :constantize].all?{|meth| "".respond_to?(meth)}
 require 'erb'
+require 'yaml'
 
 class FixtureDependencies
   @fixtures = {}
