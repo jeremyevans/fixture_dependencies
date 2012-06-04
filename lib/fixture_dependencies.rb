@@ -190,8 +190,8 @@ class << FixtureDependencies
             use(dep_name, loading, procs)
             value = get(dep_name)
           end
-        elsif
-          many_associations << [attr, reflection, model_method(:reflection_type, mtype, reflection) == :has_one ? [value] : value]
+        else
+          many_associations << [attr, reflection, value]
           next
         end
       end
@@ -213,7 +213,7 @@ class << FixtureDependencies
     end
     # Update the has_many and habtm associations
     many_associations.each do |attr, reflection, values|
-      values.each do |value|
+      Array(values).each do |value|
         dep_name = "#{model_method(:reflection_class, mtype, reflection).name.underscore}__#{value}".to_sym
         rtype = model_method(:reflection_type, mtype, reflection) if verbose > 1
         if dep_name == record
