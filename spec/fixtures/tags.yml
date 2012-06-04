@@ -4,4 +4,4 @@ m:
 i:
   id: 2
   name: I
-  albums: p
+  albums: [p, mo]

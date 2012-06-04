@@ -82,10 +82,13 @@ describe FixtureDependencies do
 
   it "should load associated many_to_many records and handle cycles (I->P->NU->P)" do
     i = load(:tag__i)
-    i.albums.length.should == 1
+    i.albums.length.should == 2
     p = i.albums.first
     p.id.should == 3
     p.name.should == 'P'
+    mo = i.albums.last
+    mo.id.should == 2
+    mo.name.should == 'MO'
     nu = p.artist
     nu.id.should == 2
     nu.name.should == 'NU'
