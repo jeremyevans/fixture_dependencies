@@ -32,7 +32,7 @@ begin
 
   desc "Run ActiveRecord specs"
   task :spec_ar do
-    sh %{rake spec_sequel FD_AR=1}
+    sh %{#{FileUtils::RUBY} -S rake spec_sequel FD_AR=1}
   end
 
   desc "Run Sequel and ActiveRecord specs"
