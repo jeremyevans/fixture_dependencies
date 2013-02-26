@@ -1,16 +1,25 @@
 require 'rake'
 require 'rake/clean'
-begin
-  require 'hanna/rdoctask'
+
+RDOC_DEFAULT_OPTS = ["--quiet", "--line-numbers", "--inline-source"]
+
+rdoc_task_class = begin
+  require "rdoc/task"
+  RDOC_DEFAULT_OPTS.concat(['-f', 'hanna'])
+  RDoc::Task
 rescue LoadError
-  require 'rake/rdoctask'
+  begin
+    require "rake/rdoctask"
+    Rake::RDocTask
+  rescue LoadError, StandardError
+  end
 end
 
 CLEAN.include ["rdoc"]
 
-Rake::RDocTask.new do |rdoc|
+rdoc_task_class.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
-  rdoc.options += ["--quiet", "--line-numbers", "--inline-source"]
+  rdoc.options += RDOC_DEFAULT_OPTS
   rdoc.main = "README"
   rdoc.title = "fixture_dependencies: Rails fixture loading that works with foreign keys"
   rdoc.rdoc_files.add ["README", "MIT-LICENSE", "lib/**/*.rb"]
