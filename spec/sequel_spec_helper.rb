@@ -8,7 +8,7 @@ class Album < Sequel::Model
 end
 
 class Tag < Sequel::Model
-  many_to_many :albums
+  many_to_many :albums, :order=>Sequel.desc(:id)
 end
 
 class SelfRef < Sequel::Model

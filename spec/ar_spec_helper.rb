@@ -12,7 +12,7 @@ class Album < ActiveRecord::Base
 end
 
 class Tag < ActiveRecord::Base
-  has_and_belongs_to_many :albums
+  has_and_belongs_to_many :albums, :order=>'id DESC'
 end
 
 class SelfRef < ActiveRecord::Base
