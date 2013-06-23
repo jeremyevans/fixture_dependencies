@@ -85,7 +85,11 @@ class << FixtureDependencies
   def load_yaml(model_name)
     raise(ArgumentError, "No fixture_path set. Use FixtureDependencies.fixture_path = ...") unless fixture_path
 
-    filename = model_name.camelize.constantize.table_name
+    filename = if File.exists?(File.join(fixture_path, "#{model_name.pluralize}.yml")) || File.exists?(File.join(fixture_path, "#{model_name.pluralize}.yml.erb"))
+	model_name.pluralize
+    else
+	model_name.camelize.constantize.table_name
+    end
     yaml_path = File.join(fixture_path, "#{filename}.yml")
 
     if File.exist?(yaml_path)
@@ -93,7 +97,7 @@ class << FixtureDependencies
     elsif File.exist?("#{yaml_path}.erb")
       yaml = YAML.load(ERB.new(File.read("#{yaml_path}.erb")).result)
     else
-      raise(ArgumentError, "No valid fixture found at #{yaml_path}[.erb]")
+      raise(ArgumentError, "No valid fixture found at #{File.join(fixture_path,'(' + model_name.pluralize + '|' + model_name.camelize.constantize.table_name.to_s + ').yml')}[.erb]")
     end
 
     yaml.each do |name, attributes|
