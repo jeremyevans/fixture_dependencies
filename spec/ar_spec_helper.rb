@@ -12,7 +12,11 @@ class Album < ActiveRecord::Base
 end
 
 class Tag < ActiveRecord::Base
-  has_and_belongs_to_many :albums, :order=>'id DESC'
+  if ActiveRecord.respond_to?(:version) # Rails 4+
+    has_and_belongs_to_many :albums, proc{order('id DESC')}
+  else
+    has_and_belongs_to_many :albums, :order=>'id DESC'
+  end
 end
 
 class SelfRef < ActiveRecord::Base
