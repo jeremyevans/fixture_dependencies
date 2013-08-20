@@ -154,7 +154,14 @@ class << FixtureDependencies
       loading.pop
       return existing_obj
     end
-    obj = model.respond_to?(:sti_key) ? attributes[model.sti_key].to_s.camelize.constantize.new : model.new
+    if model.respond_to?(:sti_load)
+      obj = model.sti_load(model.sti_key => attributes[model.sti_key])
+      obj.send(:initialize)
+    elsif model.respond_to?(:sti_key)
+      obj = attributes[model.sti_key].to_s.camelize.constantize.new
+    else
+      obj = model.new
+    end
     puts "#{spaces}#{model} STI plugin detected, initializing instance of #{obj}" if (verbose > 1 && model.respond_to?(:sti_dataset))
     many_associations = []
     attributes.each do |attr, value|
