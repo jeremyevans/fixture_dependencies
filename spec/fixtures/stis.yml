@@ -1,0 +1,11 @@
+main:
+  id: 1
+  kind: Sti
+  number: 10
+sub:
+  id: 2
+  kind: StiSub
+  number: 20
+nil:
+  id: 3
+  number: 30

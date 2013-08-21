@@ -19,7 +19,7 @@ describe FixtureDependencies do
 
   after do
     # Clear tables and fixture_dependencies caches
-    [:com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists].each{|x| DB[x].delete}
+    [:stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists].each{|x| DB[x].delete}
     FixtureDependencies.loaded.clear
     FixtureDependencies.fixtures.clear
   end
@@ -235,6 +235,20 @@ unless ENV['FD_AR']
     c.id1.should == 7
     c.id2.should == 8
     c.self_ref.should == a
+  end
+
+  it "should handle STI tables correctly" do
+    main, sub, nl = load(:stis=>[:main, :sub, :nil])
+    main.class.should == Sti
+    sub.class.should == StiSub
+    nl.class.should == Sti
+  end
+
+  it "should handle STI tables with model maps correctly" do
+    main, sub, nl = load(:stys=>[:main, :sub, :nil])
+    main.class.should == Sty
+    sub.class.should == StySub
+    nl.class.should == StySub
   end
 end
 end

@@ -33,3 +33,17 @@ class ComSelfRef < Sequel::Model
   many_to_one :self_ref, :key=>[:self_ref_id1, :self_ref_id2], :class=>self
   one_to_many :self_refs, :key=>[:self_ref_id1, :self_ref_id2], :class=>self
 end
+
+class Sti < Sequel::Model
+  plugin :single_table_inheritance, :kind
+end
+
+class StiSub < Sti
+end
+
+class Sty < Sequel::Model(:stis)
+  plugin :single_table_inheritance, :kind, :model_map=>{nil=>:StySub, 'StiSub'=>:StySub, 'Sti'=>self}, :key_map=>{self=>'Sti', :StySub=>'StiSub'}
+end
+
+class StySub < Sty
+end
