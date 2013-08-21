@@ -45,12 +45,12 @@ begin
   end
 
   desc "Run Sequel and ActiveRecord specs"
-  task :default=>[:spec_sequel, :spec_ar]
+  task :default=>[:spec_migrate, :spec_sequel, :spec_ar]
 rescue LoadError
 end
 
 desc "Create spec database"
 task :spec_migrate do
   sh %{mkdir -p spec/db}
-  sh %{sequel -m spec/migrate -E sqlite://spec/db/fd_spec.sqlite3}
+  sh %{#{FileUtils::RUBY} -S sequel -m spec/migrate -E sqlite://spec/db/fd_spec.sqlite3}
 end
