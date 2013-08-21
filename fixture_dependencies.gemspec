@@ -1,6 +1,6 @@
 spec = Gem::Specification.new do |s| 
   s.name = "fixture_dependencies"
-  s.version = "1.3.1"
+  s.version = "1.3.2"
   s.author = "Jeremy Evans"
   s.email = "code@jeremyevans.net"
   s.platform = Gem::Platform::RUBY
@@ -10,4 +10,6 @@ spec = Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.has_rdoc = true
   s.rdoc_options = %w'--inline-source --line-numbers README lib'
+  s.license = 'MIT'
+  s.homepage = "https://github.com/jeremyevans/fixture_dependencies"
 end
