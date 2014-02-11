@@ -89,7 +89,9 @@ name of the association and the associations name.  This assumes you have an
 employee fixture with a name of jeremy, and products fixture with the name of
 nx7010, and a vendors fixture with the name lxg_computers.
 
-Fixture files still use the table_name of the model.
+Fixture files still use the table_name of the model. Note that you make sure
+to hard code primary key values for each fixture, as shown in the example
+above.
 
 == ERB Fixtures
 
