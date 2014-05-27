@@ -31,21 +31,36 @@ task :package do
 end
 
 begin
-  require 'spec/rake/spectask'
-
-  desc "Run Sequel specs"
-  Spec::Rake::SpecTask.new(:spec_sequel) do |t|
-    t.spec_files = Dir['spec/*_spec.rb']
-    #t.rcov = true
+  begin
+    # RSpec 1
+    require "spec/rake/spectask"
+    spec_class = Spec::Rake::SpecTask
+    spec_files_meth = :spec_files=
+  rescue LoadError
+    # RSpec 2
+    require "rspec/core/rake_task"
+    spec_class = RSpec::Core::RakeTask
+    spec_files_meth = :pattern=
   end
 
+  desc "Run Sequel specs"
+  spec_class.new(:spec_sequel) do |t|
+    t.send(spec_files_meth, Dir['spec/fd_spec.rb'])
+  end
+
+  desc "Run Sequel/RSpec integration specs"
+  spec_class.new(:spec_rspec_sequel) do |t|
+    t.send(spec_files_meth, Dir['spec/fd_rspec_spec.rb'])
+  end
+
+  RAKE = ENV['RAKE'] || "#{FileUtils::RUBY} -S rake"
   desc "Run ActiveRecord specs"
   task :spec_ar do
-    sh %{#{FileUtils::RUBY} -S rake spec_sequel FD_AR=1}
+    sh %{#{RAKE} spec_sequel FD_AR=1}
   end
 
   desc "Run Sequel and ActiveRecord specs"
-  task :default=>[:spec_migrate, :spec_sequel, :spec_ar]
+  task :default=>[:spec_migrate, :spec_sequel, :spec_ar, :spec_rspec_sequel]
 rescue LoadError
 end
 
