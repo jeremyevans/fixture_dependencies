@@ -5,6 +5,7 @@ require 'yaml'
 class FixtureDependencies
   @fixtures = {}
   @loaded = {}
+  @model_class = {}
   @verbose = 0
   
   # Load all record arguments into the database. If a single argument is
@@ -62,7 +63,7 @@ require 'fixture_dependencies/sequel' if defined?(Sequel::Model)
 
 class << FixtureDependencies
   attr_reader :fixtures, :loaded
-  attr_accessor :verbose, :fixture_path
+  attr_accessor :verbose, :fixture_path, :model_class
   
   private
     
@@ -76,7 +77,7 @@ class << FixtureDependencies
   # the fixture name.  
   def get(record)
     model_name, name = split_name(record)
-    model = model_name.camelize.constantize
+    model = model_klass(model_name)
     model_method(:model_find, model_type(model), model, fixtures[model_name.to_sym][name.to_sym][fixture_pk(model)])
   end
   
@@ -85,7 +86,7 @@ class << FixtureDependencies
   def load_yaml(model_name)
     raise(ArgumentError, "No fixture_path set. Use FixtureDependencies.fixture_path = ...") unless fixture_path
 
-    filename = model_name.camelize.constantize.table_name
+    filename = model_klass(model_name).table_name
     yaml_path = File.join(fixture_path, "#{filename}.yml")
 
     if File.exist?(yaml_path)
@@ -121,6 +122,14 @@ class << FixtureDependencies
     end
   end
   
+  # Return the class associated with the given model_name.  By default, the
+  # class name is automagically derived from the model name, however this
+  # can be overridden by `FixtureDependencies.model_class[:name] =
+  # Some::Class`.
+  def model_klass(model_name)
+    model_class[model_name.to_sym] or model_name.camelize.constantize
+  end
+
   # Split the fixture name into the name of the model and the name of
   # the individual fixture.
   def split_name(name)
@@ -139,7 +148,7 @@ class << FixtureDependencies
     puts "#{spaces}load stack:#{loading.inspect}" if verbose > 1
     loading.push(record)
     model_name, name = split_name(record)
-    model = model_name.camelize.constantize
+    model = model_klass(model_name)
     unless loaded[model_name.to_sym]
       puts "#{spaces}loading #{model.table_name}.yml" if verbose > 0
       load_yaml(model_name)
