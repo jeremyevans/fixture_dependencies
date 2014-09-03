@@ -7,7 +7,8 @@ class Album < Sequel::Model
   many_to_many :tags
 end
 
-class Tag < Sequel::Model
+module Name; end
+class Name::Tag < Sequel::Model
   many_to_many :albums, :order=>Sequel.desc(:id)
 end
 

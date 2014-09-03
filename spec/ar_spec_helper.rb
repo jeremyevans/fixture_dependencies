@@ -11,7 +11,8 @@ class Album < ActiveRecord::Base
   has_and_belongs_to_many :tags
 end
 
-class Tag < ActiveRecord::Base
+module Name; end
+class Name::Tag < ActiveRecord::Base
   if ActiveRecord.respond_to?(:version) # Rails 4+
     has_and_belongs_to_many :albums, proc{order('id DESC')}
   else
