@@ -10,7 +10,7 @@ $:.unshift(File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'li
 require 'fixture_dependencies'
 FixtureDependencies.fixture_path = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures')
 #FixtureDependencies.verbose = 3
-FixtureDependencies.model_class[:tag] = Name::Tag
+FixtureDependencies.class_map[:tag] = Name::Tag
 
 if defined?(RSpec)
   require 'rspec/version'

@@ -5,7 +5,7 @@ require 'yaml'
 class FixtureDependencies
   @fixtures = {}
   @loaded = {}
-  @model_class = {}
+  @class_map = {}
   @verbose = 0
   
   # Load all record arguments into the database. If a single argument is
@@ -63,7 +63,7 @@ require 'fixture_dependencies/sequel' if defined?(Sequel::Model)
 
 class << FixtureDependencies
   attr_reader :fixtures, :loaded
-  attr_accessor :verbose, :fixture_path, :model_class
+  attr_accessor :verbose, :fixture_path, :class_map
   
   private
     
@@ -77,7 +77,7 @@ class << FixtureDependencies
   # the fixture name.  
   def get(record)
     model_name, name = split_name(record)
-    model = model_klass(model_name)
+    model = model_class(model_name)
     model_method(:model_find, model_type(model), model, fixtures[model_name.to_sym][name.to_sym][fixture_pk(model)])
   end
   
@@ -86,7 +86,7 @@ class << FixtureDependencies
   def load_yaml(model_name)
     raise(ArgumentError, "No fixture_path set. Use FixtureDependencies.fixture_path = ...") unless fixture_path
 
-    filename = model_klass(model_name).table_name
+    filename = model_class(model_name).table_name
     yaml_path = File.join(fixture_path, "#{filename}.yml")
 
     if File.exist?(yaml_path)
@@ -124,10 +124,10 @@ class << FixtureDependencies
   
   # Return the class associated with the given model_name.  By default, the
   # class name is automagically derived from the model name, however this
-  # can be overridden by `FixtureDependencies.model_class[:name] =
-  # Some::Class`.
-  def model_klass(model_name)
-    model_class[model_name.to_sym] or model_name.camelize.constantize
+  # can be overridden by <tt>FixtureDependencies.class_map[:name] =
+  # Some::Class</tt>.
+  def model_class(model_name)
+    class_map[model_name.to_sym] || model_name.camelize.constantize
   end
 
   # Split the fixture name into the name of the model and the name of
@@ -148,7 +148,7 @@ class << FixtureDependencies
     puts "#{spaces}load stack:#{loading.inspect}" if verbose > 1
     loading.push(record)
     model_name, name = split_name(record)
-    model = model_klass(model_name)
+    model = model_class(model_name)
     unless loaded[model_name.to_sym]
       puts "#{spaces}loading #{model.table_name}.yml" if verbose > 0
       load_yaml(model_name)

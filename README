@@ -235,6 +235,19 @@ new fixtures.
 Instantiated fixtures are not available with this plugin.  Instead, you should
 use load(:model__fixture_name).
 
+== Namespace Issues
+
+By default, fixture dependencies is going to load the model with the camelized
+name in the symbol used.  So for :foo_bar__baz, it's going to look for
+the fixture with name baz for the model FooBar.  If your model is namespaced,
+such as Foo::Bar, this isn't going to work well.  In that case, you can
+override the default mapping:
+
+  FixtureDependencies.class_map[:bar] = Foo::Bar
+
+and then use :bar__baz to load the fixture with name baz for the model
+Foo::Bar.
+
 == Troubleshooting
 
 If you run into problems with loading your fixtures, it can be difficult to see
