@@ -4,12 +4,12 @@ end
 
 class Album < Sequel::Model
   many_to_one :artist
-  many_to_many :tags
+  many_to_many :tags, :class => "Name::Tag"
 end
 
 module Name; end
 class Name::Tag < Sequel::Model
-  many_to_many :albums, :order=>Sequel.desc(:id)
+  many_to_many :albums, :order=>Sequel.desc(:id), :class => Album
 end
 
 class SelfRef < Sequel::Model
