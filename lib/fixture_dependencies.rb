@@ -113,9 +113,9 @@ class << FixtureDependencies
   # A symbol representing the base class of the model, currently
   # ActiveRecord::Base and Sequel::Model are supported.
   def model_type(model)
-    if model.ancestors.map{|x| x.to_s}.include?('ActiveRecord::Base')
+    if model.ancestors.map(&:to_s).include?('ActiveRecord::Base')
       :AR
-    elsif model.ancestors.map{|x| x.to_s}.include?('Sequel::Model')
+    elsif model.ancestors.map(&:to_s).include?('Sequel::Model')
       :S
     else
       raise TypeError, 'not ActiveRecord or Sequel model'
