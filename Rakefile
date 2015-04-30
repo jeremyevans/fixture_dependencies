@@ -30,43 +30,25 @@ task :package do
   sh %{gem build fixture_dependencies.gemspec}
 end
 
-begin
-  begin
-    raise LoadError if ENV['RSPEC1']
-    # RSpec 2
-    require "rspec/core/rake_task"
-    spec_class = RSpec::Core::RakeTask
-    spec_files_meth = :pattern=
-  rescue LoadError
-    # RSpec 1
-    require "spec/rake/spectask"
-    spec_class = Spec::Rake::SpecTask
-    spec_files_meth = :spec_files=
-  end
+desc "Run Sequel and ActiveRecord specs"
+task :default=>[:spec_migrate, :spec_sequel, :spec_ar]
 
-  desc "Run Sequel specs"
-  spec_class.new(:spec_sequel) do |t|
-    t.send(spec_files_meth, Dir['spec/fd_spec.rb'])
-  end
+desc "Run Sequel specs"
+task :spec_sequel do
+  sh "#{FileUtils::RUBY} -I lib spec/fd_spec.rb"
+end
 
-  desc "Run Sequel/RSpec integration specs"
-  spec_class.new(:spec_rspec_sequel) do |t|
-    t.send(spec_files_meth, Dir['spec/fd_rspec_spec.rb'])
-  end
-
-  RAKE = ENV['RAKE'] || "#{FileUtils::RUBY} -S rake"
-  desc "Run ActiveRecord specs"
-  task :spec_ar do
-    sh %{#{RAKE} spec_sequel FD_AR=1}
-  end
-
-  desc "Run Sequel and ActiveRecord specs"
-  task :default=>[:spec_migrate, :spec_sequel, :spec_ar, :spec_rspec_sequel]
-rescue LoadError
+desc "Run ActiveRecord specs"
+task :spec_ar do
+  ENV['FD_AR'] = '1'
+  sh "#{FileUtils::RUBY} -I lib spec/fd_spec.rb"
+  ENV.delete('FD_AR')
 end
 
 desc "Create spec database"
 task :spec_migrate do
-  sh %{mkdir -p spec/db}
-  sh %{#{FileUtils::RUBY} -S sequel -m spec/migrate sqlite://spec/db/fd_spec.sqlite3}
+  unless File.exist?('spec/db/fd_spec.sqlite3')
+    sh %{mkdir -p spec/db}
+    sh %{#{FileUtils::RUBY} -S sequel -m spec/migrate sqlite://spec/db/fd_spec.sqlite3}
+  end
 end
