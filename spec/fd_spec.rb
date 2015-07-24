@@ -13,7 +13,7 @@ describe FixtureDependencies do
 
   after do
     # Clear tables and fixture_dependencies caches
-    [:stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists].each{|x| DB[x].delete}
+    [:ctis, :cti_subs, :cti_mms, :cti_mm_subs, :stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists].each{|x| DB[x].delete}
     FixtureDependencies.loaded.clear
     FixtureDependencies.fixtures.clear
   end
@@ -244,5 +244,19 @@ describe FixtureDependencies do
     main.class.must_equal Sty
     sub.class.must_equal StySub
     nl.class.must_equal StySub
+  end
+
+  it "should handle CTI tables correctly" do
+    main, sub, nl = load(:ctis=>[:main, :sub, :nil])
+    main.class.must_equal Cti
+    sub.class.must_equal CtiSub
+    nl.class.must_equal Cti
+  end
+
+  it "should handle CTI tables with model maps correctly" do
+    main, sub, nl = load(:cti_mm=>[:main, :sub, :nil])
+    main.class.must_equal CtiMm
+    sub.class.must_equal CtiMmSub
+    nl.class.must_equal CtiMmSub
   end
 end

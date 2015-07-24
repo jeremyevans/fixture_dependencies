@@ -1,0 +1,12 @@
+main:
+  id: 1
+  kind: Cti
+  number: 10
+sub:
+  id: 2
+  kind: CtiSub
+  number: 20
+  extra_number: 100
+nil:
+  id: 3
+  number: 30
