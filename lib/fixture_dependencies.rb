@@ -166,17 +166,17 @@ class << FixtureDependencies
     if model.respond_to?(:sti_load)
       obj = model.sti_load(model.sti_key => attributes[model.sti_key])
       obj.send(:initialize)
+      model = obj.model
     elsif model.respond_to?(:sti_key)
       obj = attributes[model.sti_key].to_s.camelize.constantize.new
     elsif model.respond_to?(:cti_key) # support for Sequel's pre-4.24.0 hybrid CTI support
       mv = attributes[model.cti_key]
       if (mm = model.cti_model_map)
-        obj = mm[mv].to_s.constantize.new
-      elsif mv.nil?
-        obj = model.new
-      else
-        obj = mv.constantize.new
+        model = mm[mv].to_s.constantize
+      elsif !mv.nil?
+        model = mv.constantize
       end
+      obj = model.new
     else
       obj = model.new
     end
