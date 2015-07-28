@@ -20,9 +20,9 @@ CLEAN.include ["rdoc", "spec/db/fd_spec.sqlite3"]
 rdoc_task_class.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
   rdoc.options += RDOC_DEFAULT_OPTS
-  rdoc.main = "README"
+  rdoc.main = "README.md"
   rdoc.title = "fixture_dependencies: Rails fixture loading that works with foreign keys"
-  rdoc.rdoc_files.add ["README", "MIT-LICENSE", "lib/**/*.rb"]
+  rdoc.rdoc_files.add ["README.md", "MIT-LICENSE", "lib/**/*.rb"]
 end
 
 desc "Package fixture_dependencies"
