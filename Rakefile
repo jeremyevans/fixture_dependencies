@@ -15,7 +15,7 @@ rescue LoadError
   end
 end
 
-CLEAN.include ["rdoc"]
+CLEAN.include ["rdoc", "spec/db/fd_spec.sqlite3"]
 
 rdoc_task_class.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
