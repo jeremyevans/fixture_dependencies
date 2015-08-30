@@ -221,6 +221,64 @@ fixtures.  That doesn't work with fixture dependencies, as there is no
 associated model.  Instead, you use a has_and_belongs_to_many association name
 in the the appropriate model fixtures (see above).
 
+## belongs_to/many_to_one polymorphic fixtures
+
+ActiveRecord supports polymorphic associations by default. With Sequel, this
+is made via the `sequel_polymorphic` gem.
+
+Here the mapping in Rails:
+
+```
+class Animal < ActiveRecord::Base
+  has_many :fruits, as: :eater
+end
+class Fruit < ActiveRcord::Base
+  belongs_to :eater, polymorphic: true
+end
+```
+
+And here on Sequel:
+
+```
+require 'sequel_polymorphic'
+class Animal < Sequel::Model
+  plugin :polymorphic
+  ony_to_many :fruits, as: :eater
+end
+class Fruit < Sequel::Model
+  plugin :polymorphic
+  many_to_one :eater, polymorphic: true
+end
+```
+
+In both cases, the fixtures looks like:
+
+`animals.yml`:
+
+```
+george:
+  id: 1
+  name: George
+```
+
+`fruits.yml`:
+
+```
+apple:
+  id: 1
+  name: Apple
+  eater: george (Animal)
+```
+
+In your test, use something like this:
+
+```
+apple = load(:fruit__apple)
+apple.eater.name.must_equal "George"
+```
+
+fixture_dependencies will set the `eater` association in `Fruit` instance `george` instance of `Animal`.
+
 ## Cyclic dependencies
 
 fixture_dependencies handles almost all cyclic dependencies.  It handles all
