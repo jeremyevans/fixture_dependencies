@@ -24,3 +24,11 @@ class SelfRef < ActiveRecord::Base
   belongs_to :self_ref
   has_many :self_refs
 end
+
+class Account < ActiveRecord::Base
+  has_many :addresses, as: :addressable
+end
+
+class Address < ActiveRecord::Base
+  belongs_to :addressable, polymorphic: true
+end

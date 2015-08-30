@@ -13,7 +13,7 @@ describe FixtureDependencies do
 
   after do
     # Clear tables and fixture_dependencies caches
-    [:ctis, :cti_subs, :cti_mms, :cti_mm_subs, :stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists].each{|x| DB[x].delete}
+    [:ctis, :cti_subs, :cti_mms, :cti_mm_subs, :stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists, :accounts, :addresses].each{|x| DB[x].delete}
     FixtureDependencies.loaded.clear
     FixtureDependencies.fixtures.clear
   end
@@ -258,5 +258,35 @@ describe FixtureDependencies do
     main.class.must_equal CtiMm
     sub.class.must_equal CtiMmSub
     nl.class.must_equal CtiMmSub
+  end
+
+  it "should load associated many_to_one records" do
+    rf = load(:album__rf)
+    rf.artist.id.must_equal 1
+  end
+
+if defined?(Account) && defined?(Address)
+    it "should handle normal fixture correctly" do
+      account = load(:account__john)
+      account.name.must_equal "John Smith"
+    end
+
+    it "should handle polymorphic one_to_many correctly" do
+      account = load(:account__john)
+      account.name.must_equal "John Smith"
+
+      address = load(:address__john_address)
+      address.street.must_equal "743 Evergreen Boulevard"
+
+      account.addresses.must_equal [address]
+    end
+
+    it "should handle polymorphic many_to_one correctly" do
+      address = load(:address__john_address)
+      address.street.must_equal "743 Evergreen Boulevard"
+
+      account = address.addressable
+      account.name.must_equal "John Smith"
+    end
   end
 end

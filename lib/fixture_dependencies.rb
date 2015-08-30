@@ -121,7 +121,7 @@ class << FixtureDependencies
       raise TypeError, 'not ActiveRecord or Sequel model'
     end
   end
-  
+
   # Return the class associated with the given model_name.  By default, the
   # class name is automagically derived from the model name, however this
   # can be overridden by <tt>FixtureDependencies.class_map[:name] =
@@ -186,6 +186,12 @@ class << FixtureDependencies
       next if attr.is_a?(Array)
       if reflection = model_method(:reflection, mtype, model, attr.to_sym)
         if [:belongs_to, :many_to_one].include?(model_method(:reflection_type, mtype, reflection))
+
+          if polymorphic_association?(value)
+            value, polymorphic_class = polymorphic_association(value)
+            reflection[:class_name] = polymorphic_class
+          end
+
           dep_name = "#{model_method(:reflection_class, mtype, reflection).name.underscore}__#{value}".to_sym
           if dep_name == record
             # Self referential record, use primary key
@@ -278,4 +284,19 @@ class << FixtureDependencies
       fpk.map{|v| attributes[v]}
     end
   end
+
+  # Polymorphic when value has the class indication
+  # Example: john (Account)
+  #   => true
+  def polymorphic_association?(value)
+    polymorphic_association(value).size == 2
+  end
+
+  # Extract association id and association_class
+  # Example: addressable: john (Account)
+  #   => ["john", "Account"]
+  def polymorphic_association(value)
+    value.to_s.scan(/(.*)\s\((.*)\)/).flatten
+  end
+
 end
