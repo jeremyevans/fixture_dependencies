@@ -26,9 +26,9 @@ class SelfRef < ActiveRecord::Base
 end
 
 class Account < ActiveRecord::Base
-  has_many :addresses, as: :addressable
+  has_many :addresses, :as => :addressable
 end
 
 class Address < ActiveRecord::Base
-  belongs_to :addressable, polymorphic: true
+  belongs_to :addressable, :polymorphic => true
 end

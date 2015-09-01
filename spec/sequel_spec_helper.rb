@@ -68,12 +68,12 @@ begin
 
   class Account < Sequel::Model
     plugin :polymorphic
-    one_to_many :addresses, as: :addressable
+    one_to_many :addresses, :as => :addressable
   end
 
   class Address < Sequel::Model
     plugin :polymorphic
-    many_to_one :addressable, polymorphic: true
+    many_to_one :addressable, :polymorphic => true
   end
 rescue LoadError
   puts "Gem 'sequel_polymorphic' was not found. Sequel polymorphic specs will be ignored"
