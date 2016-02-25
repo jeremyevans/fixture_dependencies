@@ -3,6 +3,7 @@ require 'minitest/autorun'
 
 describe FixtureDependencies do
   def load(*a) FixtureDependencies.load(*a) end
+  def load_attributes(*a) FixtureDependencies.load_attributes(*a) end
   def verbose(i=3)
     v = FixtureDependencies.verbose
     FixtureDependencies.verbose = i
@@ -24,12 +25,26 @@ describe FixtureDependencies do
     ym.name.must_equal 'YM'
   end
 
+  it "should load attributes for single records with underscore syntax" do
+    lym = load_attributes(:artist__lym)
+    lym.name.must_equal 'LYM'
+    lym.id.must_be_nil
+  end
+
   it "should load multiple records with underscore syntax and multiple arguments" do
     rf, mo = load(:album__rf, :album__mo) 
     rf.id.must_equal 1
     rf.name.must_equal 'RF'
     mo.id.must_equal 2
     mo.name.must_equal 'MO'
+  end
+
+  it "should load attributes for multiple records with underscore syntax and multiple arguments" do
+    lym, lnu = load_attributes(:artist__lym, :artist__lnu)
+    lym.name.must_equal 'LYM'
+    lym.id.must_equal nil
+    lnu.name.must_equal 'LNU'
+    lnu.id.must_equal nil
   end
 
   it "should load multiple records with hash syntax" do
@@ -40,6 +55,14 @@ describe FixtureDependencies do
     mo.name.must_equal 'MO'
   end
 
+  it "should load attributes for multiple records with hash syntax" do
+    lym, lnu = load_attributes(:artists=>[:lym, :lnu])
+    lym.name.must_equal 'LYM'
+    lym.id.must_equal nil
+    lnu.name.must_equal 'LNU'
+    lnu.id.must_equal nil
+  end
+
   it "should load multiple records with a mix a hashes and symbols" do
     rf, mo = load(:album__rf, :albums=>[:mo]) 
     rf.id.must_equal 1
@@ -48,18 +71,38 @@ describe FixtureDependencies do
     mo.name.must_equal 'MO'
   end
 
+  it "should load attributes for multiple records with a mix a hashes and symbols" do
+    lym, lnu = load_attributes(:artist__lym, :artists=>[:lnu])
+    lym.name.must_equal 'LYM'
+    lym.id.must_equal nil
+    lnu.name.must_equal 'LNU'
+    lnu.id.must_equal nil
+  end
+
   it "should load whole tables at once with single symbol" do
     Artist.count.must_equal 0
     load(:artists) 
-    Artist.count.must_equal 2
+    Artist.count.must_equal 4
+  end
+
+  it "should load attributes for whole tables at once with single symbol" do
+    ym, nu, lym, lnu = load_attributes(:artists)
+    ym.name.must_equal 'YM'
+    ym.id.must_equal 1
+    nu.name.must_equal 'NU'
+    nu.id.must_equal 2
+    lym.name.must_equal 'LYM'
+    lym.id.must_equal nil
+    lnu.name.must_equal 'LNU'
+    lnu.id.must_equal nil
   end
 
   it "should load whole tables at once with single symbol" do
     Artist.count.must_equal 0
     Album.count.must_equal 0
     load(:artists, :albums) 
-    Artist.count.must_equal 2
-    Album.count.must_equal 3
+    Artist.count.must_equal 4
+    Album.count.must_equal 4
   end
 
   it "should load associated many_to_one records" do
@@ -72,6 +115,13 @@ describe FixtureDependencies do
     nu.albums.length.must_equal 1
     nu.albums.first.id.must_equal 3
     nu.albums.first.name.must_equal 'P'
+  end
+
+  it "should load associated many_to_one record when loading attributes" do
+    q = load_attributes(:album__q)
+    q.id.must_equal 4
+    q.name.must_equal 'Q'
+    q.artist.name.must_equal 'LNU'
   end
 
   it "should load associated many_to_many records and handle cycles (I->P->NU->P)" do

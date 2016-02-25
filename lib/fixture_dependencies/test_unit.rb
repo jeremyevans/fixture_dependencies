@@ -9,6 +9,14 @@ module Test
       def load(*fixture)
         FixtureDependencies.load(*fixture)
       end
+
+      def load_attributes(*args)
+        FixtureDependencies.load_attributes(*args)
+      end
+
+      def build(*args)
+        FixtureDependencies.build(*args)
+      end
     end
   end
 end

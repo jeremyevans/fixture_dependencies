@@ -31,6 +31,26 @@ class FixtureDependencies
   # This will load the data from the yaml files for each argument whose model
   # is not already in the fixture hash.
   def self.load(*records)
+    load_with_options(records)
+  end
+
+  # Load the attributes for the record arguments. This method responds
+  # to the same interface as 'load', the difference being that has_many
+  # associations are not loaded.
+  def self.load_attributes(*records)
+    load_with_options(records, :attributes_only=>true)
+  end
+
+  # Loads the attribute for a single record, merging optional attributes.
+  def self.build(record, attributes = {})
+    obj = FixtureDependencies.load_attributes([record])
+
+    attributes.each { |key, value| obj.send("#{key}=", value) }
+
+    obj
+  end
+
+  def self.load_with_options(records, opts = {})
     ret = records.map do |record|
       if record.is_a?(Hash)
         record.map do |k, vals|
@@ -43,14 +63,14 @@ class FixtureDependencies
     end.flatten.compact.map do |record| 
       model_name, name = split_name(record)
       if name
-        use(record.to_sym)
+        use(record.to_sym, opts)
       else
         model_name = model_name.singularize
         unless loaded[model_name.to_sym]
           puts "loading #{model_name}.yml" if verbose > 0
           load_yaml(model_name) 
         end
-        fixtures[model_name.to_sym].keys.map{|name| use(:"#{model_name}__#{name}")}
+        fixtures[model_name.to_sym].keys.map{|name| use(:"#{model_name}__#{name}", opts)}
       end
     end
     ret.length == 1 ? ret[0] : ret
@@ -142,7 +162,7 @@ class << FixtureDependencies
   # the database, return it.  Will check the yaml file for fixtures if no
   # fixtures yet exist for the model.  If the fixture isn't in the fixture
   # hash, raise an error.
-  def use(record, loading = [], procs = {})
+  def use(record, opts = {}, loading = [], procs = {})
     spaces = " " * loading.length
     puts "#{spaces}using #{record}" if verbose > 0
     puts "#{spaces}load stack:#{loading.inspect}" if verbose > 1
@@ -218,7 +238,7 @@ class << FixtureDependencies
           else
             # Regular assocation, load it
             puts "#{spaces}#{record}.#{attr}: belongs_to:#{dep_name}" if verbose > 1
-            use(dep_name, loading, procs)
+            use(dep_name, {}, loading, procs)
             value = get(dep_name)
           end
         else
@@ -229,6 +249,8 @@ class << FixtureDependencies
       puts "#{spaces}#{record}.#{attr} = #{value.inspect}" if verbose > 2
       obj.send("#{attr}=", value)
     end
+
+    return obj if opts[:attributes_only]
 
     puts "#{spaces}saving #{record}" if verbose > 1
 
@@ -260,7 +282,7 @@ class << FixtureDependencies
         else
           # Regular association, add it
           puts "#{spaces}#{record}.#{attr}: #{rtype}:#{dep_name}" if verbose > 1
-          model_method(:add_associated_object, mtype, reflection, attr, obj, use(dep_name, loading, procs))
+          model_method(:add_associated_object, mtype, reflection, attr, obj, use(dep_name, {}, loading, procs))
         end
       end
     end

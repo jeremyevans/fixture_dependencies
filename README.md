@@ -187,6 +187,33 @@ the loosest coupling possible.  Here's an example:
 Don't worry about loading the same fixture twice, if a fixture is already
 loaded, it won't attempt to load it again.
 
+## Loading attributes only
+
+You can load only the attributes of fixtures, without saving them with
+load\_attributes. This is useful for occasions where you want to mutate
+attributes without having to create lots of fixtures or want to test
+code that is run before or after the database transaction (validations,
+model hooks).
+
+```
+# load_attributes responds like load, but without saving the record
+fruit = load_attributes(:fruit__banana)
+# test the behaviour before saving the record
+fruit.save
+# test the behaviour after saving the record
+```
+
+You can also use the build method for loading the attributes of a
+single record, merging the attributes passed as options. This is useful
+for testing changes in behaviour when mutating a single parameter:
+
+```
+old_banana   = build(:fruit__banana, :age=>'old')
+fresh_banana = build(:fruit__banana, :age=>'new')
+old_banana.must_be :rotten?
+new_banana.wont_be :rotten?
+```
+
 ## one_to_many/many_to_many/has_many/has_and_belongs_to_many assocations
 
 Here's an example of using has_one (logon_information), has_many (assets), and

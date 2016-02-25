@@ -30,4 +30,12 @@ example_group.class_eval do
   def load(*args)
     FixtureDependencies.load(*args)
   end
+
+  def load_attributes(*args)
+    FixtureDependencies.load_attributes(*args)
+  end
+
+  def build(*args)
+    FixtureDependencies.build(*args)
+  end
 end
