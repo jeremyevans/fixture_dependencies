@@ -21,7 +21,7 @@ rdoc_task_class.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
   rdoc.options += RDOC_DEFAULT_OPTS
   rdoc.main = "README.md"
-  rdoc.title = "fixture_dependencies: Rails fixture loading that works with foreign keys"
+  rdoc.title = "fixture_dependencies: Sequel/ActiveRecord fixture loader that handles dependency graphs"
   rdoc.rdoc_files.add ["README.md", "MIT-LICENSE", "lib/**/*.rb"]
 end
 

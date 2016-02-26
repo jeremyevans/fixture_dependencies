@@ -86,7 +86,7 @@ describe FixtureDependencies do
   end
 
   it "should load attributes for whole tables at once with single symbol" do
-    ym, nu, lym, lnu = load_attributes(:artists)
+    lnu, lym, nu, ym = load_attributes(:artists).sort_by{|x| x.name}
     ym.name.must_equal 'YM'
     ym.id.must_equal 1
     nu.name.must_equal 'NU'
