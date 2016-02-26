@@ -75,6 +75,16 @@ Somewhere before the test code is loaded:
 
 This runs each spec inside a separate Sequel transaction.
 
+### With Minitest/Spec:
+
+Somewhere before the test code is loaded:
+
+```
+  require 'fixture_dependencies/minitest_spec/sequel'
+```
+
+This runs each spec inside a separate Sequel transaction.
+
 ### With other testing libraries:
 
 You can just use FixtureDependencies.load to handle the loading of fixtures.
