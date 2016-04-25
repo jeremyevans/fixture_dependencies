@@ -1,6 +1,6 @@
 Gem::Specification.new do |s| 
   s.name = "fixture_dependencies"
-  s.version = "1.7.1"
+  s.version = "1.8.0"
   s.author = "Jeremy Evans"
   s.email = "code@jeremyevans.net"
   s.platform = Gem::Platform::RUBY
