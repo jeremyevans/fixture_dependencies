@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.email = "code@jeremyevans.net"
   s.platform = Gem::Platform::RUBY
   s.summary = "Sequel/ActiveRecord fixture loader that handles dependency graphs"
-  s.files = ["README.md", "MIT-LICENSE", "lib/fixture_dependencies.rb", "lib/fixture_dependencies_test_help.rb", "lib/fixture_dependencies/sequel.rb", "lib/fixture_dependencies/active_record.rb", "lib/fixture_dependencies/minitest_spec.rb", "lib/fixture_dependencies/minitest_spec/sequel.rb", "lib/fixture_dependencies/test_unit.rb", "lib/fixture_dependencies/test_unit/rails.rb", "lib/fixture_dependencies/test_unit/sequel.rb", "lib/fixture_dependencies/rspec/sequel.rb"]
+  s.files = ["README.md", "MIT-LICENSE"] + Dir['lib/**/*.rb']
   s.extra_rdoc_files = ["MIT-LICENSE"]
   s.require_paths = ["lib"]
   s.has_rdoc = true
