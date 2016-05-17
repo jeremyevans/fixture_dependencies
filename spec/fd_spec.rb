@@ -338,5 +338,13 @@ if defined?(Account) && defined?(Address)
       account = address.addressable
       account.name.must_equal "John Smith"
     end
+
+    it "should handle more than 1 polymorphic correctly" do
+      address = load(:address__lym_address)
+      address.street.must_equal "123 Walnut Street - Moe's Tavern"
+
+      artist = address.addressable
+      artist.name.must_equal "LYM"
+    end
   end
 end

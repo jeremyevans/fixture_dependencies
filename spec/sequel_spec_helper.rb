@@ -71,6 +71,11 @@ begin
     one_to_many :addresses, :as => :addressable
   end
 
+  class Artist < Sequel::Model
+    plugin :polymorphic
+    one_to_many :addresses, :as => :addressable
+  end
+
   class Address < Sequel::Model
     plugin :polymorphic
     many_to_one :addressable, :polymorphic => true
