@@ -210,9 +210,11 @@ class << FixtureDependencies
           if polymorphic_association?(value)
             value, polymorphic_class = polymorphic_association(value)
             reflection[:class_name] = polymorphic_class
+            dep_name = "#{polymorphic_class.to_s.underscore}__#{value}".to_sym
+          else
+            dep_name = "#{model_method(:reflection_class, mtype, reflection).name.underscore}__#{value}".to_sym
           end
 
-          dep_name = "#{model_method(:reflection_class, mtype, reflection).name.underscore}__#{value}".to_sym
           if dep_name == record
             # Self referential record, use primary key
             puts "#{spaces}#{record}.#{attr}: belongs_to self-referential" if verbose > 1
