@@ -6,11 +6,6 @@ class Artist < ActiveRecord::Base
   has_many :albums
 end
 
-class Album < ActiveRecord::Base
-  belongs_to :artist
-  has_and_belongs_to_many :tags
-end
-
 module Name; end
 class Name::Tag < ActiveRecord::Base
   if ActiveRecord.respond_to?(:version) # Rails 4+
@@ -18,6 +13,11 @@ class Name::Tag < ActiveRecord::Base
   else
     has_and_belongs_to_many :albums, :order=>'id DESC'
   end
+end
+
+class Album < ActiveRecord::Base
+  belongs_to :artist
+  has_and_belongs_to_many :tags, :class_name=>'Name::Tag'
 end
 
 class SelfRef < ActiveRecord::Base
