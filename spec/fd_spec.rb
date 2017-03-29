@@ -42,9 +42,9 @@ describe FixtureDependencies do
   it "should load attributes for multiple records with underscore syntax and multiple arguments" do
     lym, lnu = load_attributes(:artist__lym, :artist__lnu)
     lym.name.must_equal 'LYM'
-    lym.id.must_equal nil
+    lym.id.must_be_nil
     lnu.name.must_equal 'LNU'
-    lnu.id.must_equal nil
+    lnu.id.must_be_nil
   end
 
   it "should load multiple records with hash syntax" do
@@ -58,9 +58,9 @@ describe FixtureDependencies do
   it "should load attributes for multiple records with hash syntax" do
     lym, lnu = load_attributes(:artists=>[:lym, :lnu])
     lym.name.must_equal 'LYM'
-    lym.id.must_equal nil
+    lym.id.must_be_nil
     lnu.name.must_equal 'LNU'
-    lnu.id.must_equal nil
+    lnu.id.must_be_nil
   end
 
   it "should load multiple records with a mix a hashes and symbols" do
@@ -74,9 +74,9 @@ describe FixtureDependencies do
   it "should load attributes for multiple records with a mix a hashes and symbols" do
     lym, lnu = load_attributes(:artist__lym, :artists=>[:lnu])
     lym.name.must_equal 'LYM'
-    lym.id.must_equal nil
+    lym.id.must_be_nil
     lnu.name.must_equal 'LNU'
-    lnu.id.must_equal nil
+    lnu.id.must_be_nil
   end
 
   it "should load whole tables at once with single symbol" do
@@ -92,9 +92,9 @@ describe FixtureDependencies do
     nu.name.must_equal 'NU'
     nu.id.must_equal 2
     lym.name.must_equal 'LYM'
-    lym.id.must_equal nil
+    lym.id.must_be_nil
     lnu.name.must_equal 'LNU'
-    lnu.id.must_equal nil
+    lnu.id.must_be_nil
   end
 
   it "should load whole tables at once with single symbol" do
