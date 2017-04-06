@@ -371,6 +371,20 @@ override the default mapping:
 and then use :bar__baz to load the fixture with name baz for the model
 Foo::Bar.
 
+## Custom Fixture Filenames
+
+Fixture dependencies will look for a file that corresponds to the table name
+for the model by default. You can override this by defining a fixtures_filename
+class method in the model:
+
+```
+  class Artist < Sequel::Model
+    def self.fixture_filename
+      :artists_custom_fixture_file
+    end
+  end
+```
+
 ## Troubleshooting
 
 If you run into problems with loading your fixtures, it can be difficult to see

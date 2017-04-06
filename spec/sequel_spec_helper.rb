@@ -2,6 +2,12 @@ class Artist < Sequel::Model
   one_to_many :albums
 end
 
+class ArtistCustomFixture < Artist
+  def self.fixture_filename
+    :artists_custom_fixture_file
+  end
+end
+
 class Album < Sequel::Model
   many_to_one :artist
   many_to_many :tags, :class => "Name::Tag"

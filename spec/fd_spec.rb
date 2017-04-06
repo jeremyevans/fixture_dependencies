@@ -314,6 +314,11 @@ describe FixtureDependencies do
     rf = load(:album__rf)
     rf.artist.id.must_equal 1
   end
+  
+  it "should handle models with fixture_filename defined" do
+    rf = load(:artist_custom_fixture__ym)
+    rf.name.must_equal "YMCUSTOM"
+  end
 
 if defined?(Account) && defined?(Address)
     it "should handle normal fixture correctly" do
