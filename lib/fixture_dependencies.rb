@@ -106,11 +106,8 @@ class << FixtureDependencies
   def load_yaml(model_name)
     raise(ArgumentError, "No fixture_path set. Use FixtureDependencies.fixture_path = ...") unless fixture_path
 
-    if model_class(model_name).respond_to?(:fixture_filename)
-      filename = model_class(model_name).fixture_filename
-    else
-      filename = model_class(model_name).table_name
-    end
+    klass = model_class(model_name)
+    filename = klass.send(klass.respond_to?(:fixture_filename) ? :fixture_filename : :table_name)
     yaml_path = File.join(fixture_path, "#{filename}.yml")
 
     if File.exist?(yaml_path)
