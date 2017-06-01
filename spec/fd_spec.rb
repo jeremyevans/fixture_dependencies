@@ -167,7 +167,8 @@ describe FixtureDependencies do
   end
 
   it "should raise error nonexistent fixture files" do
-    class Foo < Sequel::Model; end
+    Foo = Class.new(Sequel::Model)
+    def Foo.table_name; :foos end
     proc{load(:foos)}.must_raise(ArgumentError)
   end
 

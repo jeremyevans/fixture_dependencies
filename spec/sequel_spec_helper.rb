@@ -56,14 +56,14 @@ class StySub < Sty
 end
 
 class Cti < Sequel::Model
-  plugin :class_table_inheritance, :key => :kind
+  plugin :class_table_inheritance, :key => :kind, :alias=>:ctis
 end
 
 class CtiSub < Cti
 end
 
 class CtiMm < Sequel::Model
-	plugin :class_table_inheritance, :key=>:kind_id, :model_map=>{nil=>:CtiMmSub, 1=>:CtiMmSub, 2=>self}, :key_map=>{self=>2, :CtiMmSub=>1}
+  plugin :class_table_inheritance, :key=>:kind_id, :model_map=>{nil=>:CtiMmSub, 1=>:CtiMmSub, 2=>self}, :key_map=>{self=>2, :CtiMmSub=>1}, :alias=>:cti_mms
 end
 
 class CtiMmSub < CtiMm
