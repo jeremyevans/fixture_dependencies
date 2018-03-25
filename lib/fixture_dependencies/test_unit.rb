@@ -1,22 +1,11 @@
-require 'fixture_dependencies'
+require 'fixture_dependencies/helper_methods'
 
 module Test
   module Unit
     class TestCase
       private
-      
-      # Load given fixtures using FixtureDependencies
-      def load(*fixture)
-        FixtureDependencies.load(*fixture)
-      end
 
-      def load_attributes(*args)
-        FixtureDependencies.load_attributes(*args)
-      end
-
-      def build(*args)
-        FixtureDependencies.build(*args)
-      end
+      include FixtureDependencies::HelperMethods
     end
   end
 end

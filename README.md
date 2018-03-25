@@ -96,6 +96,16 @@ FixtureDependencies:
   FixtureDependencies.fixture_path = '/path/to/fixtures'
 ```
 
+A few helper methods are also available, just include them in your test superclass:
+
+```
+  require 'fixture_dependencies/helper_methods'
+
+  class Test < Minitest::Test
+    include FixtureDependencies::HelperMethods
+  end
+```
+
 ## Changes to Rails default fixtures:
 
 fixture_dependencies is designed to require the least possible changes to

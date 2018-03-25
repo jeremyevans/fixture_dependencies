@@ -1,15 +1,5 @@
-require 'fixture_dependencies'
+require 'fixture_dependencies/helper_methods'
 
 class Minitest::Spec
-  def load(*args)
-    FixtureDependencies.load(*args)
-  end
-
-  def load_attributes(*args)
-    FixtureDependencies.load_attributes(*args)
-  end
-
-  def build(*args)
-    FixtureDependencies.build(*args)
-  end
+  include FixtureDependencies::HelperMethods
 end
