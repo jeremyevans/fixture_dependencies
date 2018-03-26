@@ -1,11 +1,5 @@
 require 'fixture_dependencies/helper_methods'
 
-module Test
-  module Unit
-    class TestCase
-      private
-
-      include FixtureDependencies::HelperMethods
-    end
-  end
+class Test::Unit::TestCase
+  include FixtureDependencies::HelperMethods
 end
