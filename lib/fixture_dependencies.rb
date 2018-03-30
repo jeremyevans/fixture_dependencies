@@ -148,7 +148,12 @@ class << FixtureDependencies
   # can be overridden by <tt>FixtureDependencies.class_map[:name] =
   # Some::Class</tt>.
   def model_class(model_name)
-    class_map[model_name.to_sym] || model_name.camelize.constantize
+    if class_map.has_key?(model_name.to_sym)
+      klass = class_map[model_name.to_sym]
+      klass.respond_to?(:constantize) ? klass.constantize : klass
+    else
+      model_name.camelize.constantize
+    end
   end
 
   # Split the fixture name into the name of the model and the name of
