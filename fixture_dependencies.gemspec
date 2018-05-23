@@ -8,7 +8,6 @@ Gem::Specification.new do |s|
   s.files = ["README.md", "MIT-LICENSE"] + Dir['lib/**/*.rb']
   s.extra_rdoc_files = ["MIT-LICENSE"]
   s.require_paths = ["lib"]
-  s.has_rdoc = true
   s.rdoc_options = %w'--inline-source --line-numbers README.md lib'
   s.license = 'MIT'
   s.homepage = "https://github.com/jeremyevans/fixture_dependencies"
