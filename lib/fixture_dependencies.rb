@@ -62,6 +62,9 @@ class FixtureDependencies
       end
     end.flatten.compact.map do |record| 
       model_name, name = split_name(record)
+      unless class_map[model_name.to_sym].nil?
+        record = "#{class_map[model_name.to_sym].to_s.underscore}__#{name}"
+      end
       if name
         use(record.to_sym, opts)
       else
