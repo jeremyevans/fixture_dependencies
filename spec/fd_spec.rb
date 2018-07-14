@@ -82,11 +82,11 @@ describe FixtureDependencies do
   it "should load whole tables at once with single symbol" do
     Artist.count.must_equal 0
     load(:artists) 
-    Artist.count.must_equal 4
+    Artist.count.must_equal 5
   end
 
   it "should load attributes for whole tables at once with single symbol" do
-    lnu, lym, nu, ym = load_attributes(:artists).sort_by{|x| x.name}
+    lnu, lym, map, nu, ym = load_attributes(:artists).sort_by{|x| x.name}
     ym.name.must_equal 'YM'
     ym.id.must_equal 1
     nu.name.must_equal 'NU'
@@ -95,14 +95,16 @@ describe FixtureDependencies do
     lym.id.must_be_nil
     lnu.name.must_equal 'LNU'
     lnu.id.must_be_nil
+    map.name.must_equal 'MAP'
+    map.id.must_equal 3
   end
 
   it "should load whole tables at once with single symbol" do
     Artist.count.must_equal 0
     Album.count.must_equal 0
     load(:artists, :albums) 
-    Artist.count.must_equal 4
-    Album.count.must_equal 4
+    Artist.count.must_equal 5
+    Album.count.must_equal 5
   end
 
   it "should load associated many_to_one records" do
@@ -175,6 +177,11 @@ describe FixtureDependencies do
   it "should raise error for unsupported model classes" do
     class Bar; def self.table_name() :bars end end
     proc{load(:bars)}.must_raise(TypeError)
+  end
+
+  it "should handle cyclic dependencies in classmap" do
+    cm = load(:cm_album__cm)
+    cm.name.must_equal "CM"
   end
 
   next if ENV['FD_AR']
@@ -315,7 +322,7 @@ describe FixtureDependencies do
     rf = load(:album__rf)
     rf.artist.id.must_equal 1
   end
-  
+
   it "should handle models with fixture_filename defined" do
     rf = load(:artist_custom_fixture__ym)
     rf.name.must_equal "YMCUSTOM"

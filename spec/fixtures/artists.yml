@@ -9,3 +9,7 @@ lym:
   name: LYM
 lnu:
   name: LNU
+map:
+  id: 3
+  name: MAP
+  albums: [cm]

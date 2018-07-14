@@ -14,3 +14,7 @@ q:
   id: 4
   name: Q
   artist: lnu
+cm:
+  id: 5
+  name: CM
+  artist: map
