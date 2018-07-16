@@ -11,3 +11,5 @@ require 'fixture_dependencies'
 FixtureDependencies.fixture_path = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures')
 #FixtureDependencies.verbose = 3
 FixtureDependencies.class_map[:tag] = Name::Tag
+FixtureDependencies.class_map[:cm_artist] = ClassMap::CmArtist
+FixtureDependencies.class_map[:cm_album] = ClassMap::CmAlbum

@@ -32,3 +32,13 @@ end
 class Address < ActiveRecord::Base
   belongs_to :addressable, :polymorphic => true
 end
+
+module ClassMap; end
+class ClassMap::CmArtist < ActiveRecord::Base
+  self.table_name = "artists"
+  has_many :albums, :class_name=>'ClassMap::CmAlbum', :foreign_key=>:artist_id
+end
+class ClassMap::CmAlbum < ActiveRecord::Base
+  self.table_name = "albums"
+  belongs_to :artist, :class_name=>'ClassMap::CmArtist', :foreign_key=>:artist_id
+end
