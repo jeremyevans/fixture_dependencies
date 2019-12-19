@@ -20,6 +20,11 @@ the following features:
 
 ```
   gem install fixture_dependencies
+  
+  # Alternatively, if you are using rails, roda etc. you can add it to your Gemfile under the 'test' grouping:  
+  group :test do
+    gem 'fixture_dependencies', '~> 1.10.0'
+  end  
 ```
 
 ## Source
