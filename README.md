@@ -85,6 +85,32 @@ Somewhere before the test code is loaded:
 
 This runs each spec inside a separate Sequel transaction.
 
+### With Rails and Minitest:
+
+You can add the following in your `test_helper.rb` file.
+
+```ruby
+ENV['RAILS_ENV'] ||= 'test'
+require_relative '../config/environment'
+require 'rails/test_help'
+
+require 'fixture_dependencies/helper_methods'
+
+class ActiveSupport::TestCase # we are monkey-patching.
+  # Run tests in parallel with specified workers
+  parallelize(workers: :number_of_processors)
+
+  # Add more helper methods to be used by all tests here...
+  include FixtureDependencies::HelperMethods
+
+  FixtureDependencies.fixture_path = './test/fixtures' # set the path of your fixtures
+
+  def run(*args, &block)
+    Sequel::Model.db.transaction(:rollback=>:always){super}
+  end
+end
+```
+
 ### With other testing libraries:
 
 You can just use FixtureDependencies.load to handle the loading of fixtures.
@@ -423,6 +449,10 @@ the differences are.
 fixture_references is a similar plugin.  It uses erb inside yaml, and uses the
 foreign key numbers inside of the association names, which leads me to believe
 it doesn't support has_* associations.
+
+## Sample Rails App with Fixtures Working
+
+Check out [this app which features Fixtures and Minitest and steps to enable you to replicate it](https://github.com/BKSpurgeon/testing_in_sequel).
 
 ## License
 
