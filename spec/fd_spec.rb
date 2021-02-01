@@ -187,6 +187,39 @@ describe FixtureDependencies do
     cm.name.must_equal "CM"
   end
 
+  if defined?(Account) && defined?(Address)
+    it "should handle normal fixture correctly" do
+      account = load(:account__john)
+      account.name.must_equal "John Smith"
+    end
+
+    it "should handle polymorphic one_to_many correctly" do
+      account = load(:account__john)
+      account.name.must_equal "John Smith"
+
+      address = load(:address__john_address)
+      address.street.must_equal "743 Evergreen Boulevard"
+
+      account.addresses.must_equal [address]
+    end
+
+    it "should handle polymorphic many_to_one correctly" do
+      address = load(:address__john_address)
+      address.street.must_equal "743 Evergreen Boulevard"
+
+      account = address.addressable
+      account.name.must_equal "John Smith"
+    end
+
+    it "should handle more than 1 polymorphic correctly" do
+      address = load(:address__lym_address)
+      address.street.must_equal "123 Walnut Street - Moe's Tavern"
+
+      artist = address.addressable
+      artist.name.must_equal "LYM"
+    end
+  end
+
   next if ENV['FD_AR']
 
   it "should load single records with underscore syntax" do
@@ -329,38 +362,5 @@ describe FixtureDependencies do
   it "should handle models with fixture_filename defined" do
     rf = load(:artist_custom_fixture__ym)
     rf.name.must_equal "YMCUSTOM"
-  end
-
-if defined?(Account) && defined?(Address)
-    it "should handle normal fixture correctly" do
-      account = load(:account__john)
-      account.name.must_equal "John Smith"
-    end
-
-    it "should handle polymorphic one_to_many correctly" do
-      account = load(:account__john)
-      account.name.must_equal "John Smith"
-
-      address = load(:address__john_address)
-      address.street.must_equal "743 Evergreen Boulevard"
-
-      account.addresses.must_equal [address]
-    end
-
-    it "should handle polymorphic many_to_one correctly" do
-      address = load(:address__john_address)
-      address.street.must_equal "743 Evergreen Boulevard"
-
-      account = address.addressable
-      account.name.must_equal "John Smith"
-    end
-
-    it "should handle more than 1 polymorphic correctly" do
-      address = load(:address__lym_address)
-      address.street.must_equal "123 Walnut Street - Moe's Tavern"
-
-      artist = address.addressable
-      artist.name.must_equal "LYM"
-    end
   end
 end
