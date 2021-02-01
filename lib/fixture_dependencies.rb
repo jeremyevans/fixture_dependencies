@@ -213,7 +213,6 @@ class << FixtureDependencies
 
           if polymorphic_association?(value)
             value, polymorphic_class = polymorphic_association(value)
-            reflection[:class_name] = polymorphic_class
             dep_name = "#{polymorphic_class.to_s.underscore}__#{value}".to_sym
           else
             dep_name = "#{model_method(:reflection_class, mtype, reflection).name.underscore}__#{value}".to_sym
