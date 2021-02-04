@@ -18,7 +18,7 @@ class << FixtureDependencies
   end
   
   def model_save_AR(object)
-    object.save || raise(ActiveRecord::ActiveRecordError)
+    object.save || raise(ActiveRecord::RecordInvalid, object)
   end
   
   def raise_model_error_AR(message)

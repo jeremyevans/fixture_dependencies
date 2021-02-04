@@ -2,7 +2,11 @@ john_address:
   addressable: john (Account)
   street: 743 Evergreen Boulevard
   city: Springfield
+
 lym_address:
   addressable: lym (Artist)
   street: 123 Walnut Street - Moe's Tavern
   city: Springfield
+
+invalid_address:
+  addressable: john (Account)

@@ -218,6 +218,11 @@ describe FixtureDependencies do
       artist = address.addressable
       artist.name.must_equal "LYM"
     end
+
+    it "should raise error with better message" do
+      err = proc { load(:address__invalid_address) }.must_raise(ActiveRecord::RecordInvalid)
+      err.message.must_match "Validation failed: Street can't be blank"
+    end
   end
 
   next if ENV['FD_AR']

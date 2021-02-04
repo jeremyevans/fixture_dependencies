@@ -31,6 +31,7 @@ end
 
 class Address < ActiveRecord::Base
   belongs_to :addressable, :polymorphic => true
+  validates :street, presence: true
 end
 
 module ClassMap; end
