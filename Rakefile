@@ -33,15 +33,17 @@ end
 desc "Run Sequel and ActiveRecord specs"
 task :default=>[:spec_migrate, :spec_sequel, :spec_ar]
 
+test_flags = '-w' if RUBY_VERSION >= '3'
+
 desc "Run Sequel specs"
 task :spec_sequel do
-  sh "#{FileUtils::RUBY} -I lib spec/fd_spec.rb"
+  sh "#{FileUtils::RUBY} #{test_flags} -I lib spec/fd_spec.rb"
 end
 
 desc "Run ActiveRecord specs"
 task :spec_ar do
   ENV['FD_AR'] = '1'
-  sh "#{FileUtils::RUBY} -I lib spec/fd_spec.rb"
+  sh "#{FileUtils::RUBY} #{test_flags} -I lib spec/fd_spec.rb"
   ENV.delete('FD_AR')
 end
 
