@@ -78,8 +78,15 @@ class ClassMap::CmAlbum < Sequel::Model(:albums)
 end
 
 begin
-  require 'sequel_polymorphic'
-
+  begin
+    require 'sequel/plugins/polymorphic'
+  rescue LoadError
+    # old versions
+    require 'sequel_polymorphic'
+  end
+rescue LoadError
+  puts "Gem 'sequel_polymorphic' was not found. Sequel polymorphic specs will be ignored"
+else
   class Account < Sequel::Model
     plugin :polymorphic
     one_to_many :addresses, :as => :addressable
@@ -94,6 +101,4 @@ begin
     plugin :polymorphic
     many_to_one :addressable, :polymorphic => true
   end
-rescue LoadError
-  puts "Gem 'sequel_polymorphic' was not found. Sequel polymorphic specs will be ignored"
 end
