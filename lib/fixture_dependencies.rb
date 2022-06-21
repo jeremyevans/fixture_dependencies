@@ -197,7 +197,6 @@ class << FixtureDependencies
     puts "#{spaces}#{model} STI plugin detected, initializing instance of #{obj}" if (verbose > 1 && model.respond_to?(:sti_dataset))
     many_associations = []
     attributes.each do |attr, value|
-      next if attr.is_a?(Array)
       if reflection = model_method(:reflection, mtype, model, attr.to_sym)
         if [:belongs_to, :many_to_one].include?(model_method(:reflection_type, mtype, reflection))
 
