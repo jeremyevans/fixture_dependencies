@@ -1,16 +1,16 @@
 # fixture_dependencies
 
-fixture_dependencies is an advanced fixture loader, allowing the loading of
-models from YAML fixtures, along with their entire dependency graph.  It has
+fixture_dependencies is a fixture loader, allowing the loading of models
+from YAML fixtures, along with their entire dependency graph.  It has
 the following features:
 
 - Fixtures specify association names instead of foreign keys
-- Support both Sequel and ActiveRecord
+- Supports both Sequel and ActiveRecord
 - Supports many_to_one/belongs_to, one_to_many/has_many,
   many_to_many/has_and_belongs_to_many, and has_one/one_to_one associations
 - Loads a fixture's dependency graph in such a manner that foreign key
   constraints aren't violated
-- Has a very simple API (FixtureDependencies.load(:model__fixture))
+- Has a simple API (`FixtureDependencies.load(:model__fixture)`)
 - Handles almost all cyclic dependencies
 - Includes Rails and Sequel test helpers for Test::Unit (and a Sequel test
   helper for RSpec) that load fixtures for every test inside a transaction,
@@ -18,29 +18,21 @@ the following features:
 
 ## Installation
 
-```
-  gem install fixture_dependencies
-```
+`gem install fixture_dependencies`
 
 ## Source
 
 Source is available via github:
+http://github.com/jeremyevans/fixture_dependencies
 
 ```
-  http://github.com/jeremyevans/fixture_dependencies
-```
-
-You can check it out with git:
-
-```
-  git clone git://github.com/jeremyevans/fixture_dependencies.git
 ```
 
 ## Usage
 
 ### With Rails/ActiveRecord/Test::Unit:
 
-Add the following to test/test_helper.rb after "require 'test_help'":
+Add the following to `test/test_helper.rb` after "require 'test_help'":
 
 ```
   require 'fixture_dependencies/test_unit/rails'
@@ -141,11 +133,11 @@ For example, see the following changes:
 ```
   OLD                       NEW
   asset1:                   asset1:
-  id: 1                     id: 1
-  employee_id: 2            employee: jeremy
-  product_id: 3             product: nx7010
-  vendor_id: 2              vendor: lxg_computers
-  note: in working order    note: in working order
+    id: 1                     id: 1
+    employee_id: 2            employee: jeremy
+    product_id: 3             product: nx7010
+    vendor_id: 2              vendor: lxg_computers
+    note: in working order    note: in working order
 ```
 
 As you can see, you just replace the foreign key attribute and value with the
@@ -153,8 +145,8 @@ name of the association and the associations name.  This assumes you have an
 employee fixture with a name of jeremy, and products fixture with the name of
 nx7010, and a vendors fixture with the name lxg_computers.
 
-Fixture files still use the table_name of the model. Note that you make sure
-to hard code primary key values for each fixture, as shown in the example
+Fixture files still use the table_name of the model. Note that you should 
+hard code primary key values for each fixture, as shown in the example
 above.
 
 ## ERB Fixtures
@@ -162,8 +154,8 @@ above.
 Fixtures can also use ERB to preprocess the fixture file, useful if you need
 to do any programming inside the fixture file, such as looping to create
 multiple records.  For the ERB support to be invoked, your fixture file
-should be named #{table_name}.yml.erb instead of #{table_name}.yml. You can
-mix ERB fixture files and regular fixture files, but you can not have an
+should be named `#{table_name}.yml.erb` instead of `#{table_name}.yml`. You can
+mix ERB fixture files and regular fixture files, but you cannot have an
 ERB fixture file and a regular fixture file for the same table (the regular
 fixture file will be used in that case).
 
@@ -182,7 +174,7 @@ fixture_dependencies changes this to underscored model names.  If you are using
 Rails' recommended table practices, this shouldn't make a difference.
 
 It is recommended that you do not use the fixtures method, and instead load
-individual fixtures as needed (see below).  This makes your tests much more
+individual fixtures as needed (see below).  This makes your tests more
 robust, in case you want to add or remove individual fixtures at a later date.
 
 ## Loading individual fixtures with fixtures class method
@@ -196,16 +188,15 @@ using the following syntax:
   end
 ```
 
-This would load just the jeremy fixture and its dependencies.  I find this is
-much better than loading all fixtures in most of my test suites.  Even better
+This would load just the jeremy fixture and its dependencies.  This is
+better than loading all fixtures for the model.  Even better
 is loading just the fixtures you want inside every test method (see below).
-This leads to the most robust testing.
 
 ## Loading fixtures inside test methods
 
-I find that it is often better to skip the use of the fixtures method entirely,
-and load the fixtures I want manually in each test method.  This provides for
-the loosest coupling possible.  Here's an example:
+It is better to skip the use of the fixtures method entirely, and load
+specific fixtures manually in each test method.  This reduces coupling
+and makes tests less brittle.  Here's an example:
 
 ```
   class EmployeeTest < Test::Unit::TestCase
@@ -232,6 +223,9 @@ the loosest coupling possible.  Here's an example:
 
 Don't worry about loading the same fixture twice, if a fixture is already
 loaded, it won't attempt to load it again.
+
+One downside of this approach is it can be slower that loading all
+fixtures before the test suite.
 
 ## Loading attributes only
 
@@ -266,7 +260,7 @@ Here's an example of using has_one (logon_information), has_many (assets), and
 has_and_belongs_to_many (groups) associations.
 
 ```
-  jeremy:
+jeremy:
   id: 2
   name: Jeremy Evans
   logon_information: jeremy
@@ -380,8 +374,7 @@ possible.
 ## Known issues
 
 Currently, the plugin only supports YAML fixtures, but other types of fixtures
-would be fairly easy to add (send me a patch if you add support for another
-fixture type).
+would be fairly easy to add.
 
 The plugin is significantly slower than the default testing method, because it
 loads all fixtures inside of a transaction (one per test method), where Rails
@@ -395,17 +388,17 @@ use load(:model__fixture_name).
 ## Namespace Issues
 
 By default, fixture dependencies is going to load the model with the camelized
-name in the symbol used.  So for :foo_bar__baz, it's going to look for
-the fixture with name baz for the model FooBar.  If your model is namespaced,
-such as Foo::Bar, this isn't going to work well.  In that case, you can
+name in the symbol used.  So for `:foo_bar__baz`, it's going to look for
+the fixture with name `baz` for the model `FooBar`.  If your model is namespaced,
+such as `Foo::Bar`, this isn't going to work well.  In that case, you can
 override the default mapping:
 
 ```
   FixtureDependencies.class_map[:bar] = Foo::Bar
 ```
 
-and then use :bar__baz to load the fixture with name baz for the model
-Foo::Bar.
+and then use `:bar__baz` to load the fixture with name `baz` for the model
+`Foo::Bar`.
 
 ## Custom Fixture Filenames
 
@@ -424,8 +417,8 @@ class method in the model:
 ## Troubleshooting
 
 If you run into problems with loading your fixtures, it can be difficult to see
-where the problems are.  To aid in debugging an error, add the following to
-test/test_helper.rb:
+where the problems are.  To aid in debugging an error, add the following code
+after requiring the library:
 
 ```
   FixtureDependencies.verbose = 3
@@ -436,7 +429,7 @@ every test, including the recursive loading of the dependency graph.
 
 ## Specs
 
-The specs for fixture dependencies and be run with Rake.  They require
+The specs for fixture dependencies are run with Rake.  They require
 the sequel, activerecord, and sqlite3 gems installed.  The default rake task
 runs the specs.  You should run the spec_migrate task first to create the
 spec database.
