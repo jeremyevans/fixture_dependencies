@@ -6,8 +6,10 @@ nu:
   name: NU
   albums: p
 lym:
+  id: 4
   name: LYM
 lnu:
+  id: 5
   name: LNU
 map:
   id: 3

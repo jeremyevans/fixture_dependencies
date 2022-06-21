@@ -6,6 +6,13 @@ class Artist < ActiveRecord::Base
   has_many :albums
 end
 
+class ArtistCustomFixture < Artist
+  def self.fixture_filename
+    :artists_custom_fixture_file
+  end
+  has_one :first_album, :class_name=>'Album', :foreign_key=>:artist_id
+end
+
 module Name; end
 class Name::Tag < ActiveRecord::Base
   if ActiveRecord.respond_to?(:version) # Rails 4+

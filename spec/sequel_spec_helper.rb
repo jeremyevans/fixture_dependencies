@@ -1,3 +1,7 @@
+require 'sequel'
+
+DB = Sequel.sqlite(File.join(File.dirname(File.expand_path(__FILE__)), 'db', 'fd_spec.sqlite3'))
+
 class Artist < Sequel::Model
   one_to_many :albums
 end
@@ -6,6 +10,7 @@ class ArtistCustomFixture < Artist
   def self.fixture_filename
     :artists_custom_fixture_file
   end
+  one_to_one :first_album, :class=>:Album, :key=>:artist_id
 end
 
 class Album < Sequel::Model
