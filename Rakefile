@@ -13,7 +13,7 @@ RDoc::Task.new do |rdoc|
   rescue Gem::LoadError
   end
 
-  rdoc.rdoc_files.add %w"README.md MIT-LICENSE lib/**/*.rb"
+  rdoc.rdoc_files.add %w"README.md MIT-LICENSE CHANGELOG lib/**/*.rb"
 end
 
 desc "Package fixture_dependencies"

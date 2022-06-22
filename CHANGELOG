@@ -1,0 +1,119 @@
+# master
+
+* Drop Ruby 1.8 support (jeremyevans)
+
+* Do not skip fixtures where attributes are an array instead of a hash (jeremyevans)
+
+* Drop support for table inheritance when using Sequel <4.24 (jeremyevans)
+
+* Raise ActiveRecord::RecordInvalid when unable to save an ActiveRecord object (AlecksJohannes) (#33)
+
+* Handle polymorphic associations in newer versions of ActiveRecord (AlecksJohannes) (#32)
+
+* Handle recursive relationships correctly when using the class_map feature (rintaun) (#28)
+
+# 1.10.0 (2018-05-18)
+
+* Add fixture_dependencies/helper_methods for FixtureDependencies::HelperMethods for the load/load_attributes/build methods (adam12) (#25)
+
+# 1.9.0 (2017-04-17)
+
+* Support a custom fixture filename per model via fixture_filename model method (roupen) (#24)
+
+* Fix polymorphic dependency load for multiple polymorphic fixtures (manuwell) (#18)
+
+# 1.8.0 (2016-04-25)
+
+* Support fixture_dependencies/minitest_spec and fixture_dependencies/minitest_spec/sequel helper integration (halostatue, badosu) (#17, #16)
+
+# 1.7.0 (2016-02-26)
+
+* Add load_attributes and build methods for instantating objects without persisting them (badosu) (#15)
+
+# 1.6.0 (2015-08-31)
+
+* Suport polymorphic associations (rpanachi) (#12)
+
+# 1.5.0 (2015-07-28)
+
+* Support Sequel <4.24.0 class table inheritance (brianphillips) (#11)
+
+# 1.4.0 (2014-09-03)
+
+* Add support for class_map for custom class mapping (mpalmer, jeremyevans) (#8)
+
+# 1.3.3 (2014-05-27)
+
+* Add support for RSpec 2+ to the rspec/sequel integration (jeremyevans)
+
+* Remove Merb/Webrat integration (jeremyevans)
+
+# 1.3.2 (2013-08-21)
+
+* Support for Sequel single table inheritance model_map functionality (brianphillips) (#6)
+
+# 1.3.1 (2012-06-04)
+
+* Fix issues on Ruby 1.9 due to lack of String#each (jeremyevans)
+
+* Require yaml instead of depending on it already being required (jeremyevans)
+
+# 1.3.0 (2011-04-13)
+
+* Add composite key support when using Sequel (gditrick, jeremyevans) (#4)
+
+* Raise errors when unable to save (jeremyevans)
+
+# 1.2.6 (2011-01-03)
+
+* Add support for Sequel single_table_inheritance plugin (derdewey) (#3)
+
+* Add Merb/Webrat integration (derdewey) (#3)
+
+# 1.2.5 (2010-10-18)
+
+* Work with Sequel 3.10+ one_to_one associations (jeremyevans)
+
+# 1.2.4 (2010-10-15)
+
+* Support preprocessing fixtures with ERB (patcoll) (#1)
+
+# 1.2.3 (2010-06-29)
+
+* Fix bogus spec suite failures when using the RSpec/Sequel helper (jeremyevans)
+
+# 1.2.2 (2009-10-12)
+
+* Fix false positive when detecting association cycles (jeremyevans)
+
+# 1.2.1 (2009-05-07)
+
+* Work with Sequel 3.0.0 (jeremyevans)
+
+# 1.2.0 (2009-02-09)
+
+* Support hashes for loading specific fixtures, without double underscore notation (jeremyevans)
+
+* Add RSpec/Sequel helper (jeremyevans)
+
+# 1.1.2 (2008-11-17)
+
+* Better handle fixtures without primary keys by setting saved value in fixture (Matthew Willson)
+
+# 1.1.1 (2008-10-14)
+
+* Fix bug when adding associated objects using Sequel (jeremyevans)
+
+# 1.1.0 (2008-08-25)
+
+* Allow use of Sequel in addition to ActiveRecord (jeremyevans)
+
+* Allow customizing fixture path (jeremyevans)
+
+* Fix singularizing already singular names when dealing with individual fixtures (jeremyevans)
+
+* Make most FixtureDependencies class methods private (jeremyevans)
+
+# 1.0.0 (2007-12-06)
+
+* Initial Release (jeremyevans)
