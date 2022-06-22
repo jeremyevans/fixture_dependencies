@@ -11,5 +11,10 @@ Gem::Specification.new do |s|
   s.rdoc_options = %w'--inline-source --line-numbers README.md lib'
   s.license = 'MIT'
   s.homepage = "https://github.com/jeremyevans/fixture_dependencies"
+  s.metadata = {
+    'bug_tracker_uri'   => 'https://github.com/jeremyevans/fixture_dependencies/issues',
+    'mailing_list_uri'  => 'https://github.com/jeremyevans/fixture_dependencies/discussions',
+    'source_code_uri'   => 'https://github.com/jeremyevans/fixture_dependencies',
+  }
   s.add_development_dependency "minitest-global_expectations"
 end
