@@ -50,7 +50,7 @@ describe FixtureDependencies do
     FixtureDependencies.fixtures.clear
     if verbose
       FixtureDependencies.verbose = 0
-      FixtureDependencies.singleton_class.remove_method(:puts)
+      FixtureDependencies.singleton_class.send(:remove_method, :puts)
       @output.must_be_empty
     end
   end
