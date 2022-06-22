@@ -1,6 +1,6 @@
 require 'sequel'
 
-DB = Sequel.sqlite(File.join(File.dirname(File.expand_path(__FILE__)), 'db', 'fd_spec.sqlite3'))
+DB = Sequel.connect(RUBY_ENGINE == 'jruby' ? 'jdbc:sqlite:spec/db/fd_spec.sqlite3' : 'sqlite://spec/db/fd_spec.sqlite3')
 
 class Artist < Sequel::Model
   one_to_many :albums

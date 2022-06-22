@@ -30,8 +30,10 @@ task :package do
   sh %{gem build fixture_dependencies.gemspec}
 end
 
+all_specs = [:spec_migrate, :spec_sequel]
+all_specs << :spec_ar unless RUBY_ENGINE == 'jruby'
 desc "Run Sequel and ActiveRecord specs"
-task :default=>[:spec_migrate, :spec_sequel, :spec_ar]
+task :default=>all_specs
 
 test_flags = '-w' if RUBY_VERSION >= '3'
 
@@ -51,7 +53,7 @@ desc "Create spec database"
 task :spec_migrate do
   unless File.exist?('spec/db/fd_spec.sqlite3')
     sh %{mkdir -p spec/db}
-    sh %{#{FileUtils::RUBY} -S sequel -m spec/migrate sqlite://spec/db/fd_spec.sqlite3}
+    sh %{#{FileUtils::RUBY} -S sequel -m spec/migrate #{RUBY_ENGINE == 'jruby' ? 'jdbc:sqlite:spec/db/fd_spec.sqlite3' : 'sqlite://spec/db/fd_spec.sqlite3'}}
   end
 end
 
