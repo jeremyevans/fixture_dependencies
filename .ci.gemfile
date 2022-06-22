@@ -1,0 +1,25 @@
+source 'https://rubygems.org'
+
+gem 'rake'
+gem 'sequel'
+gem "minitest-global_expectations"
+
+if RUBY_VERSION < '2.2'
+  gem 'activerecord', '< 5'
+elsif RUBY_VERSION < '2.3'
+  gem 'activerecord', '< 5.2'
+else
+  gem 'activerecord'
+end
+
+platforms :ruby do
+  if RUBY_VERSION < '1.9'
+    gem 'sqlite3', '< 1.4'
+  else
+    gem 'sqlite3'
+  end
+end
+
+platforms :jruby do
+  gem 'jdbc-sqlite3'
+end
