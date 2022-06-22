@@ -1,5 +1,3 @@
-require 'fixture_dependencies/helper_methods'
+require_relative 'helper_methods'
 
-class Minitest::Spec
-  include FixtureDependencies::HelperMethods
-end
+Minitest::Spec.send(:include, FixtureDependencies::HelperMethods)

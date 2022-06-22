@@ -80,9 +80,8 @@ class FixtureDependencies
   end
 end
 
-require 'fixture_dependencies/active_record' if defined?(ActiveRecord::Base)
-require 'fixture_dependencies/sequel' if defined?(Sequel::Model)
-  
+require_relative 'fixture_dependencies/active_record' if defined?(ActiveRecord::Base)
+require_relative 'fixture_dependencies/sequel' if defined?(Sequel::Model)
 
 class << FixtureDependencies
   attr_reader :fixtures, :loaded

@@ -16,5 +16,6 @@ Gem::Specification.new do |s|
     'mailing_list_uri'  => 'https://github.com/jeremyevans/fixture_dependencies/discussions',
     'source_code_uri'   => 'https://github.com/jeremyevans/fixture_dependencies',
   }
+  s.required_ruby_version = ">= 1.9.2"
   s.add_development_dependency "minitest-global_expectations"
 end

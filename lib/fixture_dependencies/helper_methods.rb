@@ -1,4 +1,4 @@
-require 'fixture_dependencies'
+require_relative '../fixture_dependencies'
 
 class FixtureDependencies
   module HelperMethods

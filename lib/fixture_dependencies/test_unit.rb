@@ -1,5 +1,3 @@
-require 'fixture_dependencies/helper_methods'
+require_relative 'helper_methods'
 
-class Test::Unit::TestCase
-  include FixtureDependencies::HelperMethods
-end
+Test::Unit::TestCase.send(:include, FixtureDependencies::HelperMethods)

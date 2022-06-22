@@ -1,4 +1,4 @@
-require 'fixture_dependencies/test_unit'
+require_relative '../test_unit'
 FixtureDependencies.fixture_path = Test::Unit::TestCase.fixture_path
 
 module Test

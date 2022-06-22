@@ -1,4 +1,4 @@
-require 'fixture_dependencies/minitest_spec'
+require_relative '../minitest_spec'
 
 class Minitest::Spec
   def run(*args, &block)

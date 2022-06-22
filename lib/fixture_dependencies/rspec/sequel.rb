@@ -1,4 +1,4 @@
-require 'fixture_dependencies/helper_methods'
+require_relative '../helper_methods'
 
 if defined?(RSpec)
   example_group = RSpec::Core::ExampleGroup
@@ -28,6 +28,4 @@ else
   end
 end
 
-example_group.class_eval do
-  include FixtureDependencies::HelperMethods
-end
+example_group.send(:include, FixtureDependencies::HelperMethods)

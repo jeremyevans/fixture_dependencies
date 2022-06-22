@@ -1,6 +1,3 @@
-require 'rubygems'
-require 'logger'
-
 if coverage = ENV.delete('COVERAGE')
   require 'simplecov'
 
@@ -13,12 +10,10 @@ if coverage = ENV.delete('COVERAGE')
   end
 end
 
-require File.join(File.dirname(File.expand_path(__FILE__)),"#{ENV['FD_AR'] ? 'ar' : 'sequel'}_spec_helper")
+require_relative "#{ENV['FD_AR'] ? 'ar' : 'sequel'}_spec_helper"
 
-$:.unshift(File.join(File.dirname(File.dirname(File.expand_path(__FILE__))), 'lib'))
-require 'fixture_dependencies'
+require_relative '../lib/fixture_dependencies'
 FixtureDependencies.fixture_path = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures')
-#FixtureDependencies.verbose = 3
 FixtureDependencies.class_map[:tag] = Name::Tag
 FixtureDependencies.class_map[:cm_artist] = ClassMap::CmArtist
 FixtureDependencies.class_map[:cm_album] = ClassMap::CmAlbum

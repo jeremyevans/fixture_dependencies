@@ -1,4 +1,4 @@
-require 'fixture_dependencies/test_unit'
+require_relative '../test_unit'
 
 class FixtureDependencies::SequelTestCase < Test::Unit::TestCase
   # Work around for Rails stupidity
