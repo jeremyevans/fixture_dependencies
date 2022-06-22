@@ -1,28 +1,19 @@
-require 'rake'
 require 'rake/clean'
-
-RDOC_DEFAULT_OPTS = ["--quiet", "--line-numbers", "--inline-source"]
-
-rdoc_task_class = begin
-  require "rdoc/task"
-  RDOC_DEFAULT_OPTS.concat(['-f', 'hanna'])
-  RDoc::Task
-rescue LoadError
-  begin
-    require "rake/rdoctask"
-    Rake::RDocTask
-  rescue LoadError, StandardError
-  end
-end
+require "rdoc/task"
 
 CLEAN.include ["rdoc", "spec/db/fd_spec.sqlite3", "coverage", "*.gem"]
 
-rdoc_task_class.new do |rdoc|
+RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
-  rdoc.options += RDOC_DEFAULT_OPTS
-  rdoc.main = "README.md"
-  rdoc.title = "fixture_dependencies: Sequel/ActiveRecord fixture loader that handles dependency graphs"
-  rdoc.rdoc_files.add ["README.md", "MIT-LICENSE", "lib/**/*.rb"]
+  rdoc.options += ["--quiet", "--line-numbers", "--inline-source", '--title', 'fixture_dependencies: Sequel/ActiveRecord fixture loader that handles dependency graphs', '--main', 'README.md']
+
+  begin
+    gem 'hanna-nouveau'
+    rdoc.options += ['-f', 'hanna']
+  rescue Gem::LoadError
+  end
+
+  rdoc.rdoc_files.add %w"README.md MIT-LICENSE lib/**/*.rb"
 end
 
 desc "Package fixture_dependencies"
