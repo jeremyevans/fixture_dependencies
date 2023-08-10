@@ -8,7 +8,7 @@ RDoc::Task.new do |rdoc|
   rdoc.options += ["--quiet", "--line-numbers", "--inline-source", '--title', 'fixture_dependencies: Sequel/ActiveRecord fixture loader that handles dependency graphs', '--main', 'README.md']
 
   begin
-    gem 'hanna-nouveau'
+    gem 'hanna'
     rdoc.options += ['-f', 'hanna']
   rescue Gem::LoadError
   end
