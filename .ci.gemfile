@@ -1,9 +1,14 @@
 source 'https://rubygems.org'
 
 gem 'rake'
-gem 'sequel'
 gem 'sequel_polymorphic'
 gem "minitest-global_expectations"
+
+if RUBY_VERSION < '2.0'
+  gem 'sequel', '< 5.72'
+else
+  gem 'sequel'
+end
 
 if RUBY_VERSION < '2.2'
   gem 'activerecord', '< 5'
