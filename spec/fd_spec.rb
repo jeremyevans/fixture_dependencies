@@ -28,6 +28,10 @@ describe FixtureDependencies do
     def check_output(msgs)
       output = @output.dup
       output.map!{|x| x.gsub(/:0x[0-9a-f]+/, '')}
+      if RUBY_VERSION >= '3.4'
+        output.map!{|x| x.gsub(/:([a-z0-9_]+)=>/, '\1: ')}
+        msgs = msgs.map{|x| x.gsub(/:([a-z0-9_]+)=>/, '\1: ')}
+      end
       @output.clear
       output.must_equal msgs
     end
