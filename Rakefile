@@ -26,7 +26,9 @@ all_specs << :spec_ar unless RUBY_ENGINE == 'jruby'
 desc "Run Sequel and ActiveRecord specs"
 task :default=>all_specs
 
-test_flags = '-w' if RUBY_VERSION >= '3'
+test_flags = String.new
+test_flags << '-w ' if RUBY_VERSION >= '3'
+test_flags << '-W:strict_unused_block ' if RUBY_VERSION >= '3.4'
 
 desc "Run Sequel specs"
 task :spec_sequel do
