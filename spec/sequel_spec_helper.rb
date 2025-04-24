@@ -23,6 +23,8 @@ class Name::Tag < Sequel::Model
   many_to_many :albums, :order=>Sequel.desc(:id), :class => Album
 end
 
+class Producer < Sequel::Model; end
+
 class SelfRef < Sequel::Model
   many_to_one :self_ref
   one_to_many :self_refs

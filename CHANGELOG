@@ -1,3 +1,7 @@
+# master
+
+* Add FixtureDependencies.use_unsafe_load to use YAML.unsafe_load to load YAML files (jeremyevans, tomasmiguez) (#37, #38)
+
 # 1.11.0 (2022-06-30)
 
 * Drop Ruby 1.8 support (jeremyevans)

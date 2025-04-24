@@ -16,11 +16,11 @@ describe FixtureDependencies do
 
   if ENV['FD_AR']
     def clear_tables
-      [:ctis, :cti_subs, :cti_mms, :cti_mm_subs, :stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists, :accounts, :addresses].each{|x| ActiveRecord::Base.connection.execute "DELETE FROM #{x}"}
+      [:ctis, :cti_subs, :cti_mms, :cti_mm_subs, :stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists, :accounts, :addresses, :producers].each{|x| ActiveRecord::Base.connection.execute "DELETE FROM #{x}"}
     end
   else
     def clear_tables
-      [:ctis, :cti_subs, :cti_mms, :cti_mm_subs, :stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists, :accounts, :addresses].each{|x| DB[x].delete}
+      [:ctis, :cti_subs, :cti_mms, :cti_mm_subs, :stis, :com_self_refs, :com_albums_com_tags, :com_tags, :com_albums, :com_artists, :self_refs, :albums_tags, :tags, :albums, :artists, :accounts, :addresses, :producers].each{|x| DB[x].delete}
     end
   end
 
@@ -1345,6 +1345,28 @@ describe FixtureDependencies do
       "saving album__rf"
     ]
   end
+
+  it "should handle dates and times without quote marks" do
+    begin
+      FixtureDependencies.use_unsafe_load = true
+
+      prd = load(:producer__prd)
+      prd.created_at.must_be_instance_of Time
+      prd.date_of_birth.must_be_instance_of Date
+      check_output [
+        "using producer__prd",
+        "load stack:[]",
+        "loading producers.yml",
+        "producer__prd.id = 1",
+        "producer__prd.name = \"PRD\"",
+        "producer__prd.date_of_birth = #<Date: 2024-01-01 ((2460311j,0s,0n),+0s,-Infj)>",
+        "producer__prd.created_at = 2021-02-16 10:00:00 -0800",
+        "saving producer__prd"
+      ]
+    ensure
+      FixtureDependencies.use_unsafe_load = false
+    end
+  end if YAML.respond_to?(:use_unsafe_load)
 
   it "should raise error for invalid fixture" do
     proc{load(:album__nonexistant)}.must_raise(defined?(Sequel::Error) ? Sequel::Error : ActiveRecord::RecordNotFound)

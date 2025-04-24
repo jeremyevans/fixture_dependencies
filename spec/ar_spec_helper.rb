@@ -22,6 +22,8 @@ class Name::Tag < ActiveRecord::Base
   end
 end
 
+class Producer < ActiveRecord::Base; end
+
 class Album < ActiveRecord::Base
   belongs_to :artist
   has_and_belongs_to_many :tags, :class_name=>'Name::Tag'
