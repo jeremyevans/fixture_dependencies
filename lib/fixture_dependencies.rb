@@ -7,6 +7,7 @@ class FixtureDependencies
   @loaded = {}
   @class_map = {}
   @verbose = 0
+  @use_unsafe_load = false
   
   # Load all record arguments into the database. If a single argument is
   # given and it corresponds to a single fixture, return the the model
@@ -85,7 +86,7 @@ require_relative 'fixture_dependencies/sequel' if defined?(Sequel::Model)
 
 class << FixtureDependencies
   attr_reader :fixtures, :loaded
-  attr_accessor :verbose, :fixture_path, :class_map
+  attr_accessor :verbose, :fixture_path, :class_map, :use_unsafe_load
   
   private
     
@@ -112,13 +113,15 @@ class << FixtureDependencies
     filename = klass.send(klass.respond_to?(:fixture_filename) ? :fixture_filename : :table_name)
     yaml_path = File.join(fixture_path, "#{filename}.yml")
 
-    if File.exist?(yaml_path)
-      yaml = YAML.load(File.read(yaml_path))
+    yaml_data = if File.exist?(yaml_path)
+      File.read(yaml_path)
     elsif File.exist?("#{yaml_path}.erb")
-      yaml = YAML.load(ERB.new(File.read("#{yaml_path}.erb")).result)
+      ERB.new(File.read("#{yaml_path}.erb")).result
     else
       raise(ArgumentError, "No valid fixture found at #{yaml_path}[.erb]")
     end
+
+    yaml = parse_yaml_data(yaml_data)
 
     yaml.each do |name, attributes|
       symbol_attrs = {}
@@ -126,6 +129,12 @@ class << FixtureDependencies
       add(model_name.to_sym, name, symbol_attrs)
     end
     loaded[model_name.to_sym] = true
+  end
+
+  # Parse the given data as YAML.  If use_unsafe_load has been safe, use
+  # YAML.unsafe_load instead of YAML.load for parsing.
+  def parse_yaml_data(yaml_data)
+    @use_unsafe_load ? YAML.unsafe_load(yaml_data) : YAML.load(yaml_data)
   end
   
   # Delegate to the correct method based on mtype

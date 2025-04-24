@@ -1346,6 +1346,21 @@ describe FixtureDependencies do
     ]
   end
 
+  it "should handle dates and times without quote marks" do
+    FixtureDependencies.use_unsafe_load = true
+
+    prd = load(:producer__prd)
+    prd.created_at.must_be_instance_of Time
+    prd.date_of_birth.must_be_instance_of Date
+    check_output [
+      "using producer__prd",
+      "load stack:[]",
+      "loading producers.yml"
+    ]
+  ensure
+    FixtureDependencies.use_unsafe_load = false
+  end
+
   it "should raise error for invalid fixture" do
     proc{load(:album__nonexistant)}.must_raise(defined?(Sequel::Error) ? Sequel::Error : ActiveRecord::RecordNotFound)
     check_output [
