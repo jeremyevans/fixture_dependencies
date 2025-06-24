@@ -83,6 +83,12 @@ end
 class ClassMap::CmAlbum < Sequel::Model(:albums)
   many_to_one :artist, :class => "ClassMap::CmArtist", :key => :artist_id
 end
+class ClassMap::MCArtist < Sequel::Model(:artists)
+  one_to_many :albums, :class => "ClassMap::MCAlbum", :key => :artist_id
+end
+class ClassMap::MCAlbum < Sequel::Model(:albums)
+  many_to_one :artist, :class => "ClassMap::MCArtist", :key => :artist_id
+end
 
 begin
   begin

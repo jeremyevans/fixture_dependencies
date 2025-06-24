@@ -52,3 +52,11 @@ class ClassMap::CmAlbum < ActiveRecord::Base
   self.table_name = "albums"
   belongs_to :artist, :class_name=>'ClassMap::CmArtist', :foreign_key=>:artist_id
 end
+class ClassMap::MCArtist < ActiveRecord::Base
+  self.table_name = "artists"
+  has_many :albums, :class_name=>'ClassMap::MCAlbum', :foreign_key=>:artist_id
+end
+class ClassMap::MCAlbum < ActiveRecord::Base
+  self.table_name = "albums"
+  belongs_to :artist, :class_name=>'ClassMap::MCArtist', :foreign_key=>:artist_id
+end

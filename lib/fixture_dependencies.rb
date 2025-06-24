@@ -63,8 +63,9 @@ class FixtureDependencies
       end
     end.flatten.compact.map do |record| 
       model_name, name = split_name(record)
-      unless class_map[model_name.to_sym].nil?
-        record = "#{class_map[model_name.to_sym].to_s.underscore}__#{name}"
+      if klass = class_map[model_name.to_sym]
+        opts = opts.dup
+        opts[:class] = klass
       end
       if name
         use(record.to_sym, opts)
@@ -106,10 +107,10 @@ class << FixtureDependencies
   
   # Adds all fixtures in the yaml fixture file for the model to the fixtures
   # hash (does not add them to the database, see add).
-  def load_yaml(model_name)
+  def load_yaml(model_name, opts={})
     raise(ArgumentError, "No fixture_path set. Use FixtureDependencies.fixture_path = ...") unless fixture_path
 
-    klass = model_class(model_name)
+    klass = opts[:class] || model_class(model_name)
     filename = klass.send(klass.respond_to?(:fixture_filename) ? :fixture_filename : :table_name)
     yaml_path = File.join(fixture_path, "#{filename}.yml")
 
@@ -180,10 +181,10 @@ class << FixtureDependencies
     puts "#{spaces}load stack:#{loading.inspect}" if verbose > 1
     loading.push(record)
     model_name, name = split_name(record)
-    model = model_class(model_name)
+    model = opts[:class] || model_class(model_name)
     unless loaded[model_name.to_sym]
       puts "#{spaces}loading #{model.table_name}.yml" if verbose > 0
-      load_yaml(model_name)
+      load_yaml(model_name, opts)
     end
     mtype = model_type(model)
     model_method(:raise_model_error, mtype, "Couldn't use fixture #{record.inspect}") unless attributes = fixtures[model_name.to_sym][name.to_sym]
@@ -212,7 +213,7 @@ class << FixtureDependencies
             value, polymorphic_class = polymorphic_association(value)
             dep_name = "#{polymorphic_class.to_s.underscore}__#{value}".to_sym
           else
-            dep_name = "#{model_method(:reflection_class, mtype, reflection).name.underscore}__#{value}".to_sym
+            dep_name = "#{dep_class(mtype, reflection)}__#{value}".to_sym
           end
 
           if dep_name == record
@@ -269,7 +270,7 @@ class << FixtureDependencies
     # Update the has_many and habtm associations
     many_associations.each do |attr, reflection, values|
       Array(values).each do |value|
-        dep_name = "#{model_method(:reflection_class, mtype, reflection).name.underscore}__#{value}".to_sym
+        dep_name = "#{dep_class(mtype, reflection)}__#{value}".to_sym
         rtype = model_method(:reflection_type, mtype, reflection) if verbose > 1
         if dep_name == record
           # Self referential, add association
@@ -289,6 +290,11 @@ class << FixtureDependencies
       end
     end
     obj
+  end
+
+  def dep_class(mtype, reflection)
+    reflection_class = model_method(:reflection_class, mtype, reflection)
+    class_map.find{|k,v| break k if v == reflection_class} || reflection_class.name.underscore
   end
 
   def fixture_pk(model)

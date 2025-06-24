@@ -17,3 +17,5 @@ FixtureDependencies.fixture_path = File.join(File.dirname(File.expand_path(__FIL
 FixtureDependencies.class_map[:tag] = Name::Tag
 FixtureDependencies.class_map[:cm_artist] = ClassMap::CmArtist
 FixtureDependencies.class_map[:cm_album] = ClassMap::CmAlbum
+FixtureDependencies.class_map[:mc_artist] = ClassMap::MCArtist
+FixtureDependencies.class_map[:mc_album] = ClassMap::MCAlbum

@@ -1,5 +1,7 @@
 # master
 
+* Make FixtureDependencies.class_map handle model names that are not CamelCase (jeremyevans) (#39)
+
 * Add FixtureDependencies.use_unsafe_load to use YAML.unsafe_load to load YAML files (jeremyevans, tomasmiguez) (#37, #38)
 
 # 1.11.0 (2022-06-30)

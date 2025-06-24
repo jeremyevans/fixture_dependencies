@@ -532,13 +532,13 @@ describe FixtureDependencies do
     nu.albums.length.must_equal 1
     nu.albums.first.must_equal p
     check_output [
-      "using name/tag__i",
+      "using tag__i",
       "load stack:[]",
       "loading tags.yml",
-      "name/tag__i.id = 2",
-      "name/tag__i.name = \"I\"",
-      "saving name/tag__i",
-      "name/tag__i.albums: many_to_many:album__p",
+      "tag__i.id = 2",
+      "tag__i.name = \"I\"",
+      "saving tag__i",
+      "tag__i.albums: many_to_many:album__p",
       "using album__p",
       "load stack:[]",
       "loading albums.yml",
@@ -554,7 +554,7 @@ describe FixtureDependencies do
       " artist__nu.albums: one_to_many cycle detected:album__p",
       "album__p.artist = #<Artist @values={:id=>2, :name=>\"NU\"}>",
       "saving album__p",
-      "name/tag__i.albums: many_to_many:album__mo",
+      "tag__i.albums: many_to_many:album__mo",
       "using album__mo",
       "load stack:[]",
       "album__mo.id = 2",
@@ -668,25 +668,47 @@ describe FixtureDependencies do
     ]
   end
 
-  it "should handle cyclic dependencies in classmap" do
+  it "should handle cyclic dependencies in classmap when camelized name matches" do
     cm = load(:cm_album__cm)
     cm.name.must_equal "CM"
     check_output [
-      "using class_map/cm_album__cm",
+      "using cm_album__cm",
       "load stack:[]",
       "loading albums.yml",
-      "class_map/cm_album__cm.id = 5",
-      "class_map/cm_album__cm.name = \"CM\"",
-      "class_map/cm_album__cm.artist: belongs_to:class_map/cm_artist__map",
-      " using class_map/cm_artist__map",
-      " load stack:[:\"class_map/cm_album__cm\"]",
+      "cm_album__cm.id = 5",
+      "cm_album__cm.name = \"CM\"",
+      "cm_album__cm.artist: belongs_to:cm_artist__map",
+      " using cm_artist__map",
+      " load stack:[:cm_album__cm]",
       " loading artists.yml",
-      " class_map/cm_artist__map.id = 3",
-      " class_map/cm_artist__map.name = \"MAP\"",
-      " saving class_map/cm_artist__map",
-      " class_map/cm_artist__map.albums: one_to_many cycle detected:class_map/cm_album__cm",
-      "class_map/cm_album__cm.artist = #<ClassMap::CmArtist @values={:id=>3, :name=>\"MAP\"}>",
-      "saving class_map/cm_album__cm"
+      " cm_artist__map.id = 3",
+      " cm_artist__map.name = \"MAP\"",
+      " saving cm_artist__map",
+      " cm_artist__map.albums: one_to_many cycle detected:cm_album__cm",
+      "cm_album__cm.artist = #<ClassMap::CmArtist @values={:id=>3, :name=>\"MAP\"}>",
+      "saving cm_album__cm"
+    ]
+  end
+
+  it "should handle cyclic dependencies in classmap when camelized name does not match" do
+    cm = load(:mc_album__cm)
+    cm.name.must_equal "CM"
+    check_output [
+      "using mc_album__cm",
+      "load stack:[]",
+      "loading albums.yml",
+      "mc_album__cm.id = 5",
+      "mc_album__cm.name = \"CM\"",
+      "mc_album__cm.artist: belongs_to:mc_artist__map",
+      " using mc_artist__map",
+      " load stack:[:mc_album__cm]",
+      " loading artists.yml",
+      " mc_artist__map.id = 3",
+      " mc_artist__map.name = \"MAP\"",
+      " saving mc_artist__map",
+      " mc_artist__map.albums: one_to_many cycle detected:mc_album__cm",
+      "mc_album__cm.artist = #<ClassMap::MCArtist @values={:id=>3, :name=>\"MAP\"}>",
+      "saving mc_album__cm"
     ]
   end
 
