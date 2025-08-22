@@ -52,12 +52,28 @@ describe FixtureDependencies do
     clear_tables
     FixtureDependencies.loaded.clear
     FixtureDependencies.fixtures.clear
+    FixtureDependencies.use_unsafe_load = false
     if verbose
       FixtureDependencies.verbose = 0
       FixtureDependencies.singleton_class.send(:remove_method, :puts)
       @output.must_be_empty
     end
   end
+
+  it "should support use_unsafe_load" do
+    FixtureDependencies.use_unsafe_load = true
+    ym = load(:artist__ym)
+    ym.id.must_equal 1
+    ym.name.must_equal 'YM'
+    check_output [
+      "using artist__ym",
+      "load stack:[]",
+      "loading artists.yml",
+      "artist__ym.id = 1",
+      "artist__ym.name = \"YM\"",
+      "saving artist__ym"
+    ]
+  end if YAML.respond_to?(:unsafe_load)
 
   it "should load single records with underscore syntax" do
     ym = load(:artist__ym)
