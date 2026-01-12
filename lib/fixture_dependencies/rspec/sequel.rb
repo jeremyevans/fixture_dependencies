@@ -2,8 +2,14 @@ require_relative '../helper_methods'
 
 if defined?(RSpec)
   example_group = RSpec::Core::ExampleGroup
-  require 'rspec/version'
-  if RSpec::Version::STRING >= '2.8.0'
+  use_rspec_configure = begin
+    require 'rspec/core/version'
+  rescue LoadError
+    require 'rspec/version'
+    RSpec::Version::STRING >= '2.8.0'
+  end
+
+  if use_rspec_configure
     RSpec.configure do |c|
       c.around(:each) do |example|
         Sequel::Model.db.transaction(:rollback=>:always){example.run}
